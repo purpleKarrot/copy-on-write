@@ -1,0 +1,23 @@
+---
+BasedOnStyle: Mozilla
+AlignOperands: false
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+BinPackArguments: true
+BinPackParameters: true
+BraceWrapping:
+  AfterClass:      true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterStruct:     true
+  AfterUnion:      true
+BreakBeforeBraces: Custom
+Cpp11BracedListStyle: FunctionCall
+ColumnLimit: 120
+IndentPPDirectives: AfterHash
+InsertBraces: true
+QualifierAlignment: Right
+SortUsingDeclarations: false
+SpaceAfterTemplateKeyword: true
+...
