@@ -167,7 +167,7 @@ public:
     }
     if (a == other._alloc) {
       _self = other._self;
-      _self->_count.fetch_add(1, std::memory_order_relaxed);
+      _self->count.fetch_add(1, std::memory_order_relaxed);
     } else {
       _self = _make_model(_alloc, *other);
     }
@@ -204,10 +204,10 @@ public:
 
     if constexpr (alloc_traits::is_always_equal::value) {
       _self = x._self;
-      _self->_count.fetch_add(1, std::memory_order_relaxed);
+      _self->count.fetch_add(1, std::memory_order_relaxed);
     } else if (_alloc == x._alloc) {
       _self = x._self;
-      _self->_count.fetch_add(1, std::memory_order_relaxed);
+      _self->count.fetch_add(1, std::memory_order_relaxed);
     } else {
       _self = _make_model(_alloc, *x);
     }
@@ -221,8 +221,8 @@ public:
 
   ~copy_on_write()
   {
-    assert(valueless_after_move() || _self->_count > 0);
-    if (_self != nullptr && _self->_count.fetch_sub(1, std::memory_order_release) == 1) {
+    assert(valueless_after_move() || _self->count > 0);
+    if (_self != nullptr && _self->count.fetch_sub(1, std::memory_order_release) == 1) {
       std::atomic_thread_fence(std::memory_order_acquire);
       _destroy_model(_alloc, _self);
     }
@@ -241,10 +241,10 @@ public:
     if (x.valueless_after_move()) {
       _reset(nullptr);
     } else if constexpr (pocca || alloc_traits::is_always_equal::value) {
-      x._self->_count.fetch_add(1, std::memory_order_relaxed);
+      x._self->count.fetch_add(1, std::memory_order_relaxed);
       _reset(x._self);
     } else if (_alloc == x._alloc) {
-      x._self->_count.fetch_add(1, std::memory_order_relaxed);
+      x._self->count.fetch_add(1, std::memory_order_relaxed);
       _reset(x._self);
     } else {
       _reset(_make_model(_alloc, *x));
@@ -271,7 +271,7 @@ public:
     } else if (pocma || _alloc == x._alloc) {
       _reset(std::exchange(x._self, nullptr));
     } else {
-      _reset(_make_model(_alloc, std::move(x._self->_value)));
+      _reset(_make_model(_alloc, std::move(x._self->value)));
       x._reset(nullptr);
     }
 
@@ -288,7 +288,7 @@ public:
   auto operator=(U&& x) -> copy_on_write&
   {
     if (_self != nullptr && use_count() == 1) {
-      _self->_value = std::forward<U>(x);
+      _self->value = std::forward<U>(x);
       return *this;
     }
 
@@ -302,13 +302,13 @@ public:
   auto operator*() const noexcept -> value_type const&
   {
     assert(!valueless_after_move());
-    return _self->_value;
+    return _self->value;
   }
 
   auto operator->() const noexcept -> const_pointer
   {
     assert(!valueless_after_move());
-    return std::pointer_traits<const_pointer>::pointer_to(_self->_value);
+    return std::pointer_traits<const_pointer>::pointer_to(_self->value);
   }
 
   [[nodiscard]] auto valueless_after_move() const noexcept -> bool
@@ -324,7 +324,7 @@ public:
   [[nodiscard]] auto use_count() const noexcept -> long
   {
     assert(!valueless_after_move());
-    return _self->_count.load(std::memory_order_acquire);
+    return _self->count.load(std::memory_order_acquire);
   }
 
   [[nodiscard]] auto identical_to(copy_on_write const& x) const noexcept -> bool
@@ -337,36 +337,39 @@ public:
   // Modifiers
   //
 
-  void modify(detail::action<T> auto action)
+  template <detail::action<T> Action>
+  void modify(Action&& action)
   {
     if (use_count() > 1) {
-      auto* p = _make_model(_alloc, _self->_value);
-      _self->_count.fetch_sub(1, std::memory_order_release);
+      auto* p = _make_model(_alloc, std::as_const(_self->value));
+      _self->count.fetch_sub(1, std::memory_order_release);
       _self = p;
     }
 
-    action(_self->_value);
+    std::forward<Action>(action)(_self->value);
   }
 
-  void modify(detail::action<T> auto action, detail::transformation<T> auto transform)
+  template <detail::action<T> Action, detail::transformation<T> Transform>
+  void modify(Action&& action, Transform&& transform)
   {
     if (use_count() > 1) {
-      auto* p = _make_model(_alloc, transform(_self->_value));
-      _self->_count.fetch_sub(1, std::memory_order_release);
+      auto* p = _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
+      _self->count.fetch_sub(1, std::memory_order_release);
       _self = p;
     } else {
-      action(_self->_value);
+      std::forward<Action>(action)(_self->value);
     }
   }
 
-  void modify(detail::transformation<T> auto transform)
+  template <detail::transformation<T> Transform>
+  void modify(Transform&& transform)
   {
     if (use_count() > 1) {
-      auto* p = _make_model(_alloc, transform(_self->_value));
-      _self->_count.fetch_sub(1, std::memory_order_release);
+      auto* p = _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
+      _self->count.fetch_sub(1, std::memory_order_release);
       _self = p;
     } else {
-      _self->_value = transform(_self->_value);
+      _self->value = std::forward<Transform>(transform)(std::as_const(_self->value));
     }
   }
 
@@ -383,65 +386,11 @@ public:
     }
   }
 
-  //
-  // Non-member functions
-  //
-
-  template <typename U, typename AA>
-  friend auto operator==(copy_on_write const& x, copy_on_write<U, AA> const& y) noexcept(noexcept(*x == *y)) -> bool
-  {
-    if (x.valueless_after_move() || y.valueless_after_move()) {
-      return x.valueless_after_move() == y.valueless_after_move();
-    }
-    if constexpr (std::same_as<T, U> && std::same_as<Allocator, AA>) {
-      if (x.identical_to(y)) {
-        return true;
-      }
-    }
-    return *x == *y;
-  }
-
-  template <typename U>
-    requires(!detail::is_copy_on_write_v<U>)
-  friend auto operator==(copy_on_write const& x, U const& y) noexcept(noexcept(*x == y)) -> bool
-  {
-    return !x.valueless_after_move() && (*x == y);
-  }
-
-  template <typename U, typename AA>
-  friend auto operator<=>(copy_on_write const& x, copy_on_write<U, AA> const& y) -> detail::synth_three_way_result<T, U>
-  {
-    if (x.valueless_after_move() || y.valueless_after_move()) {
-      return !x.valueless_after_move() <=> !y.valueless_after_move();
-    }
-    if constexpr (std::same_as<T, U> && std::same_as<Allocator, AA>) {
-      if (x.identical_to(y)) {
-        return std::strong_ordering::equal;
-      }
-    }
-    return detail::synth_three_way(*x, *y);
-  }
-
-  template <typename U>
-    requires(!detail::is_copy_on_write_v<U>)
-  friend auto operator<=>(copy_on_write const& x, U const& y) -> detail::synth_three_way_result<T, U>
-  {
-    if (x.valueless_after_move()) {
-      return std::strong_ordering::less;
-    }
-    return detail::synth_three_way(*x, y);
-  }
-
-  friend void swap(copy_on_write& x, copy_on_write& y) noexcept(noexcept(x.swap(y)))
-  {
-    x.swap(y);
-  }
-
 private:
   struct model
   {
-    std::atomic<long> _count{1};
-    value_type _value;
+    std::atomic<long> count;
+    value_type value;
   };
 
   using model_alloc_t = typename alloc_traits::template rebind_alloc<model>;
@@ -451,9 +400,9 @@ private:
   {
     auto ma = model_alloc_t{a};
     auto p = std::allocator_traits<model_alloc_t>::allocate(ma, 1);
-    ::new (std::addressof(p->_count)) std::atomic<long>{1};
+    ::new (std::addressof(p->count)) std::atomic<long>{1};
     try {
-      alloc_traits::construct(a, std::addressof(p->_value), std::forward<Args>(args)...);
+      alloc_traits::construct(a, std::addressof(p->value), std::forward<Args>(args)...);
     } catch (...) {
       std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);
       throw;
@@ -464,13 +413,13 @@ private:
   static void _destroy_model(Allocator& a, model* p)
   {
     auto ma = model_alloc_t{a};
-    alloc_traits::destroy(a, std::addressof(p->_value));
+    alloc_traits::destroy(a, std::addressof(p->value));
     std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);
   }
 
   void _reset(model* v)
   {
-    if (_self != nullptr && _self->_count.fetch_sub(1, std::memory_order_release) == 1) {
+    if (_self != nullptr && _self->count.fetch_sub(1, std::memory_order_release) == 1) {
       std::atomic_thread_fence(std::memory_order_acquire);
       _destroy_model(_alloc, _self);
     }
@@ -480,6 +429,57 @@ private:
   [[no_unique_address]] allocator_type _alloc;
   model* _self;
 };
+
+template <typename T, typename A, typename U, typename AA>
+  auto operator==(copy_on_write<T, A> const& x, copy_on_write<U, AA> const& y) noexcept(noexcept(*x == *y)) -> bool
+{
+  if (x.valueless_after_move() || y.valueless_after_move()) {
+    return x.valueless_after_move() == y.valueless_after_move();
+  }
+  if constexpr (std::same_as<T, U> && std::same_as<A, AA>) {
+    if (x.identical_to(y)) {
+      return true;
+    }
+  }
+  return *x == *y;
+}
+
+template <typename T, typename A, typename U>
+  requires(!detail::is_copy_on_write_v<U>)
+auto operator==(copy_on_write<T, A> const& x, U const& y) noexcept(noexcept(*x == y)) -> bool
+{
+  return !x.valueless_after_move() && (*x == y);
+}
+
+template <typename T, typename A, typename U, typename AA>
+auto operator<=>(copy_on_write<T, A> const& x, copy_on_write<U, AA> const& y) -> detail::synth_three_way_result<T, U>
+{
+  if (x.valueless_after_move() || y.valueless_after_move()) {
+    return !x.valueless_after_move() <=> !y.valueless_after_move();
+  }
+  if constexpr (std::same_as<T, U> && std::same_as<A, AA>) {
+    if (x.identical_to(y)) {
+      return std::strong_ordering::equal;
+    }
+  }
+  return detail::synth_three_way(*x, *y);
+}
+
+template <typename T, typename A, typename U>
+  requires(!detail::is_copy_on_write_v<U>)
+auto operator<=>(copy_on_write<T, A> const& x, U const& y) -> detail::synth_three_way_result<T, U>
+{
+  if (x.valueless_after_move()) {
+    return std::strong_ordering::less;
+  }
+  return detail::synth_three_way(*x, y);
+}
+
+template <typename T, typename A>
+void swap(copy_on_write<T, A>& x, copy_on_write<T, A>& y) noexcept(noexcept(x.swap(y)))
+{
+  x.swap(y);
+}
 
 template <typename Value>
 copy_on_write(Value) -> copy_on_write<Value>;
