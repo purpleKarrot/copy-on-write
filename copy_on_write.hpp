@@ -24,7 +24,8 @@ template <typename F, typename T>
 concept action = std::invocable<F, T&> && std::same_as<std::invoke_result_t<F, T&>, void>;
 
 template <typename F, typename T>
-concept transformation = std::invocable<F, T const&> && std::same_as<std::invoke_result_t<F, T const&>, T>;
+concept transformation =
+  std::invocable<F, T const&> && std::same_as<std::invoke_result_t<F, T const&>, T>;
 
 template <typename T>
 concept hashable = requires(T t) { std::hash<T>{}(t); };
@@ -65,7 +66,8 @@ constexpr auto synth_three_way(T const& t, U const& u) -> std::weak_ordering
 }
 
 template <typename T, typename U = T>
-using synth_three_way_result = decltype(synth_three_way(std::declval<T const&>(), std::declval<U const&>()));
+using synth_three_way_result =
+  decltype(synth_three_way(std::declval<T const&>(), std::declval<U const&>()));
 
 } // namespace detail
 
@@ -77,9 +79,11 @@ class copy_on_write
   static_assert(std::is_object_v<T>, "T must be an object type");
   static_assert(!std::is_array_v<T>, "T must not be an array type");
   static_assert(!std::is_same_v<T, std::in_place_t>, "T must not be std::in_place_t");
-  static_assert(!detail::is_in_place_type_v<T>, "T must not be a specialization of std::in_place_type_t");
+  static_assert(!detail::is_in_place_type_v<T>,
+                "T must not be a specialization of std::in_place_type_t");
   static_assert(!std::is_const_v<T> && !std::is_volatile_v<T>, "T must not be cv-qualified");
-  static_assert(std::is_same_v<T, typename alloc_traits::value_type>, "Allocator::value_type must be T");
+  static_assert(std::is_same_v<T, typename alloc_traits::value_type>,
+                "Allocator::value_type must be T");
 
 public:
   using value_type = T;
@@ -100,8 +104,8 @@ public:
 
   template <typename U = T>
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
-             !std::same_as<std::remove_cvref_t<U>, std::in_place_t> && std::constructible_from<T, U> &&
-             std::default_initializable<Allocator>)
+             !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
+             std::constructible_from<T, U> && std::default_initializable<Allocator>)
   explicit copy_on_write(U&& x)
     : _alloc{}
     , _self{_make_model(_alloc, std::forward<U>(x))}
@@ -117,7 +121,8 @@ public:
   }
 
   template <typename I, typename... Us>
-    requires(std::constructible_from<T, std::initializer_list<I>&, Us...> && std::default_initializable<Allocator>)
+    requires(std::constructible_from<T, std::initializer_list<I>&, Us...> &&
+             std::default_initializable<Allocator>)
   explicit copy_on_write(std::in_place_t, std::initializer_list<I> ilist, Us&&... us)
     : _alloc{}
     , _self{_make_model(_alloc, ilist, std::forward<Us>(us)...)}
@@ -133,7 +138,8 @@ public:
 
   template <typename U = T>
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
-             !std::same_as<std::remove_cvref_t<U>, std::in_place_t> && std::constructible_from<T, U>)
+             !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
+             std::constructible_from<T, U>)
   explicit copy_on_write(std::allocator_arg_t, Allocator const& a, U&& u)
     : _alloc{a}
     , _self{_make_model(_alloc, std::forward<U>(u))}
@@ -150,8 +156,8 @@ public:
 
   template <typename I, typename... Us>
     requires std::constructible_from<T, std::initializer_list<I>&, Us...>
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t, std::initializer_list<I> ilist,
-                         Us&&... us)
+  explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
+                         std::initializer_list<I> ilist, Us&&... us)
     : _alloc{a}
     , _self{_make_model(_alloc, ilist, std::forward<Us>(us)...)}
   {
@@ -257,8 +263,9 @@ public:
     return *this;
   }
 
-  auto operator=(copy_on_write&& x) noexcept(alloc_traits::propagate_on_container_move_assignment::value ||
-                                             alloc_traits::is_always_equal::value) -> copy_on_write&
+  auto operator=(copy_on_write&& x) noexcept(
+    alloc_traits::propagate_on_container_move_assignment::value ||
+    alloc_traits::is_always_equal::value) -> copy_on_write&
   {
     if (std::addressof(x) == this) {
       return *this;
@@ -283,8 +290,8 @@ public:
   }
 
   template <typename U = T>
-    requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> && std::constructible_from<T, U> &&
-             std::assignable_from<T&, U>)
+    requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
+             std::constructible_from<T, U> && std::assignable_from<T&, U>)
   auto operator=(U&& x) -> copy_on_write&
   {
     if (_self != nullptr && use_count() == 1) {
@@ -353,7 +360,8 @@ public:
   void modify(Action&& action, Transform&& transform)
   {
     if (use_count() > 1) {
-      auto* p = _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
+      auto* p =
+        _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
       _self->count.fetch_sub(1, std::memory_order_release);
       _self = p;
     } else {
@@ -365,7 +373,8 @@ public:
   void modify(Transform&& transform)
   {
     if (use_count() > 1) {
-      auto* p = _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
+      auto* p =
+        _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
       _self->count.fetch_sub(1, std::memory_order_release);
       _self = p;
     } else {
@@ -430,13 +439,14 @@ private:
   model* _self;
 };
 
-template <typename T, typename A, typename U, typename AA>
-  auto operator==(copy_on_write<T, A> const& x, copy_on_write<U, AA> const& y) noexcept(noexcept(*x == *y)) -> bool
+template <typename T1, typename A1, typename T2, typename A2>
+auto operator==(copy_on_write<T1, A1> const& x,
+                copy_on_write<T2, A2> const& y) noexcept(noexcept(*x == *y)) -> bool
 {
   if (x.valueless_after_move() || y.valueless_after_move()) {
     return x.valueless_after_move() == y.valueless_after_move();
   }
-  if constexpr (std::same_as<T, U> && std::same_as<A, AA>) {
+  if constexpr (std::same_as<T1, T2> && std::same_as<A1, A2>) {
     if (x.identical_to(y)) {
       return true;
     }
@@ -451,13 +461,14 @@ auto operator==(copy_on_write<T, A> const& x, U const& y) noexcept(noexcept(*x =
   return !x.valueless_after_move() && (*x == y);
 }
 
-template <typename T, typename A, typename U, typename AA>
-auto operator<=>(copy_on_write<T, A> const& x, copy_on_write<U, AA> const& y) -> detail::synth_three_way_result<T, U>
+template <typename T1, typename A1, typename T2, typename A2>
+auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
+  -> detail::synth_three_way_result<T1, T2>
 {
   if (x.valueless_after_move() || y.valueless_after_move()) {
     return !x.valueless_after_move() <=> !y.valueless_after_move();
   }
-  if constexpr (std::same_as<T, U> && std::same_as<A, AA>) {
+  if constexpr (std::same_as<T1, T2> && std::same_as<A1, A2>) {
     if (x.identical_to(y)) {
       return std::strong_ordering::equal;
     }

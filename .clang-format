@@ -14,7 +14,7 @@ BraceWrapping:
   AfterUnion:      true
 BreakBeforeBraces: Custom
 Cpp11BracedListStyle: FunctionCall
-ColumnLimit: 120
+ColumnLimit: 100
 IndentPPDirectives: AfterHash
 InsertBraces: true
 QualifierAlignment: Right
