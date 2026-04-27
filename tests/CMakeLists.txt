@@ -5,13 +5,14 @@ cmake_minimum_required(VERSION 3.31)
 find_package(GTest REQUIRED)
 
 add_executable(cow_tests
-  construction.cpp
-  observers.cpp
-  modifiers.cpp
+  allocator.cpp
   assignment.cpp
   comparison.cpp
+  composition.cpp
+  construction.cpp
   hash.cpp
-  allocator.cpp
+  modifiers.cpp
+  observers.cpp
   )
 target_link_libraries(cow_tests PRIVATE copy_on_write GTest::gtest_main)
 
