@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <memory_resource>
+#include <stdexcept>
 #include <string>
 
 namespace {
@@ -129,6 +130,28 @@ struct pocs_allocator : tracking_allocator<T>
 };
 
 } // namespace
+
+// ---------------------------------------------------------------------------
+// Exception safety
+// ---------------------------------------------------------------------------
+
+TEST(Allocator, ExceptionDeallocates)
+{
+  struct ThrowOnCopy
+  {
+    ThrowOnCopy() = default;
+    ThrowOnCopy(ThrowOnCopy const&) { throw std::runtime_error("throws"); }
+  };
+
+  int allocs = 0, deallocs = 0;
+  tracking_allocator<ThrowOnCopy> ta(&allocs, &deallocs, 1);
+
+  EXPECT_THROW((xyz::copy_on_write<ThrowOnCopy, tracking_allocator<ThrowOnCopy>>(
+                 std::allocator_arg, ta, ThrowOnCopy{})),
+               std::runtime_error);
+  EXPECT_EQ(allocs, 1);
+  EXPECT_EQ(deallocs, 1);
+}
 
 // ---------------------------------------------------------------------------
 // Basic allocation tracking

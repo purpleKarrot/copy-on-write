@@ -3,6 +3,7 @@
 #include <copy_on_write.hpp>
 #include <gtest/gtest.h>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -22,6 +23,15 @@ TEST(Construction, DefaultConstructorString)
   xyz::copy_on_write<std::string> x;
   EXPECT_EQ(*x, "");
   EXPECT_FALSE(x.valueless_after_move());
+}
+
+TEST(Construction, DefaultConstructorThrows)
+{
+  struct ThrowOnConstruct
+  {
+    ThrowOnConstruct() { throw std::runtime_error("throws"); }
+  };
+  EXPECT_THROW(xyz::copy_on_write<ThrowOnConstruct>(), std::runtime_error);
 }
 
 // ---------------------------------------------------------------------------
