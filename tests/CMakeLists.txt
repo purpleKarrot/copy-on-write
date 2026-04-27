@@ -9,6 +9,7 @@ add_executable(cow_tests
   assignment.cpp
   comparison.cpp
   composition.cpp
+  composition_impl.cpp
   construction.cpp
   hash.cpp
   modifiers.cpp
