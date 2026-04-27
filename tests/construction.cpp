@@ -123,6 +123,15 @@ TEST(Construction, CopyConstructorPreservesValue)
   EXPECT_EQ(*b, "copy me");
 }
 
+TEST(Construction, CopyConstructorFromValueless)
+{
+  xyz::copy_on_write<int> a(42);
+  xyz::copy_on_write<int> sink(std::move(a)); // a is now valueless
+  xyz::copy_on_write<int> b(a);              // copy-construct from valueless source
+  EXPECT_TRUE(a.valueless_after_move());
+  EXPECT_TRUE(b.valueless_after_move());
+}
+
 // ---------------------------------------------------------------------------
 // Move constructor
 // ---------------------------------------------------------------------------
@@ -155,6 +164,15 @@ TEST(Construction, AllocArgCopyConstructorSameAllocatorSharesModel)
   EXPECT_EQ(*b, 21);
 }
 
+TEST(Construction, AllocArgCopyConstructorFromValueless)
+{
+  xyz::copy_on_write<int> a(42);
+  xyz::copy_on_write<int> sink(std::move(a)); // a is now valueless
+  std::allocator<int> alloc;
+  xyz::copy_on_write<int> b(std::allocator_arg, alloc, a); // copy from valueless
+  EXPECT_TRUE(b.valueless_after_move());
+}
+
 TEST(Construction, AllocArgMoveConstructorSameAllocatorTransfersModel)
 {
   std::allocator<int> alloc;
@@ -162,6 +180,15 @@ TEST(Construction, AllocArgMoveConstructorSameAllocatorTransfersModel)
   xyz::copy_on_write<int> b(std::allocator_arg, alloc, std::move(a));
   EXPECT_TRUE(a.valueless_after_move());
   EXPECT_EQ(*b, 33);
+}
+
+TEST(Construction, AllocArgMoveConstructorFromValueless)
+{
+  xyz::copy_on_write<int> a(42);
+  xyz::copy_on_write<int> sink(std::move(a)); // a is now valueless
+  std::allocator<int> alloc;
+  xyz::copy_on_write<int> b(std::allocator_arg, alloc, std::move(a)); // move from valueless
+  EXPECT_TRUE(b.valueless_after_move());
 }
 
 // ---------------------------------------------------------------------------
