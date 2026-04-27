@@ -168,9 +168,11 @@ public:
     , _self{nullptr}
   {
     static_assert(std::is_copy_constructible_v<T>);
+
     if (other.valueless_after_move()) {
       return;
     }
+
     if (a == other._alloc) {
       _self = other._self;
       _self->count.fetch_add(1, std::memory_order_relaxed);
@@ -188,9 +190,7 @@ public:
       return;
     }
 
-    if constexpr (alloc_traits::is_always_equal::value) {
-      _self = std::exchange(other._self, nullptr);
-    } else if (a == other._alloc) {
+    if (alloc_traits::is_always_equal::value || a == other._alloc) {
       _self = std::exchange(other._self, nullptr);
     } else {
       _self = _make_model(_alloc, std::move(*other));
@@ -208,10 +208,7 @@ public:
       return;
     }
 
-    if constexpr (alloc_traits::is_always_equal::value) {
-      _self = x._self;
-      _self->count.fetch_add(1, std::memory_order_relaxed);
-    } else if (_alloc == x._alloc) {
+    if (alloc_traits::is_always_equal::value || _alloc == x._alloc) {
       _self = x._self;
       _self->count.fetch_add(1, std::memory_order_relaxed);
     } else {
@@ -437,11 +434,13 @@ auto operator==(copy_on_write<T1, A1> const& x,
   if (x.valueless_after_move() || y.valueless_after_move()) {
     return x.valueless_after_move() == y.valueless_after_move();
   }
+
   if constexpr (std::same_as<T1, T2> && std::same_as<A1, A2>) {
     if (x.identical_to(y)) {
       return true;
     }
   }
+
   return *x == *y;
 }
 
@@ -459,11 +458,13 @@ auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
   if (x.valueless_after_move() || y.valueless_after_move()) {
     return !x.valueless_after_move() <=> !y.valueless_after_move();
   }
+
   if constexpr (std::same_as<T1, T2> && std::same_as<A1, A2>) {
     if (x.identical_to(y)) {
       return std::strong_ordering::equal;
     }
   }
+
   return detail::synth_three_way(*x, *y);
 }
 
@@ -474,6 +475,7 @@ auto operator<=>(copy_on_write<T, A> const& x, U const& y) -> detail::synth_thre
   if (x.valueless_after_move()) {
     return std::strong_ordering::less;
   }
+
   return detail::synth_three_way(*x, y);
 }
 
@@ -508,6 +510,7 @@ struct std::hash<xyz::copy_on_write<T, Allocator>>
     if (x.valueless_after_move()) {
       return static_cast<std::size_t>(-1);
     }
+
     return std::hash<T>{}(*x);
   }
 };

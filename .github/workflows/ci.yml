@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux GCC
+            os: ubuntu-latest
+            coverage-command: gcov-14
+            env:
+              CC: gcc-14
+              CXX: g++-14
+              CFLAGS: --coverage
+              CXXFLAGS: --coverage
+
+          - name: Linux Clang
+            os: ubuntu-latest
+            env:
+              CC: clang
+              CXX: clang++
+
+          - name: macOS Clang
+            os: macos-latest
+            env:
+              CC: clang
+              CXX: clang++
+
+          - name: Windows MSVC
+            os: windows-latest
+            env:
+              CC: cl.exe
+              CXX: cl.exe
+
+    name: Build & Test (CMake)
+    runs-on: ${{ matrix.os }}
+    env: ${{ matrix.env }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Dashboard Build
+        uses: chorse-dev/cmake-action@master
+        with:
+          build-name: ${{ matrix.name }}
+          change-id: ${{ github.sha }}
+          cmake-generator: Ninja
+          config-options: ${{ matrix.config-options }}
+          coverage-command: ${{ matrix.coverage-command }}
+          memorycheck-command: ${{ matrix.memorycheck-command }}
+          memorycheck-type: ${{ matrix.memorycheck-type }}
+          use-launchers: ON
