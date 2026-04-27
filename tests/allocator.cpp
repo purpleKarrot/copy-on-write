@@ -298,3 +298,65 @@ TEST(Allocator, PmrCopyOnWriteCopySharesModel)
   EXPECT_TRUE(a.identical_to(b));
   EXPECT_EQ(*b, 7);
 }
+
+// ---------------------------------------------------------------------------
+// allocator_arg move constructor — else branch (different, non-equal allocators)
+// ---------------------------------------------------------------------------
+
+TEST(Allocator, AllocArgMoveConstructorDifferentAllocatorAllocatesNewModel)
+{
+  int allocs1 = 0, deallocs1 = 0;
+  int allocs2 = 0, deallocs2 = 0;
+  tracking_allocator<int> ta1(&allocs1, &deallocs1, 1);
+  tracking_allocator<int> ta2(&allocs2, &deallocs2, 2);
+
+  xyz::copy_on_write<int, tracking_allocator<int>> a(std::allocator_arg, ta1, 99);
+  xyz::copy_on_write<int, tracking_allocator<int>> b(std::allocator_arg, ta2, std::move(a));
+
+  EXPECT_TRUE(a.valueless_after_move());
+  EXPECT_EQ(*b, 99);
+  EXPECT_EQ(allocs2, 1); // one new allocation using ta2
+}
+
+// ---------------------------------------------------------------------------
+// Copy constructor — else branch
+// (select_on_container_copy_construction returns a different allocator)
+// ---------------------------------------------------------------------------
+
+TEST(Allocator, CopyConstructorWithDivergingAllocatorAllocatesNewModel)
+{
+  // pmr::polymorphic_allocator::select_on_container_copy_construction() returns
+  // an allocator using the *default* memory resource, which differs from the
+  // custom pool, so the copy constructor takes the else branch.
+  std::array<std::byte, 1024> buf;
+  std::pmr::monotonic_buffer_resource pool(buf.data(), buf.size());
+  std::pmr::polymorphic_allocator<int> pmr_alloc(&pool);
+
+  xyz::pmr::copy_on_write<int> a(std::allocator_arg, pmr_alloc, 42);
+  xyz::pmr::copy_on_write<int> b(a);
+
+  EXPECT_FALSE(a.identical_to(b)); // fresh model allocated
+  EXPECT_EQ(*a, 42);
+  EXPECT_EQ(*b, 42);
+}
+
+// ---------------------------------------------------------------------------
+// Copy assignment — else branch (non-POCCA, non-equal allocators)
+// ---------------------------------------------------------------------------
+
+TEST(Allocator, CopyAssignmentWithDifferentNonPropagatingAllocatorAllocatesNewModel)
+{
+  int allocs1 = 0, deallocs1 = 0;
+  int allocs2 = 0, deallocs2 = 0;
+  tracking_allocator<int> ta1(&allocs1, &deallocs1, 1);
+  tracking_allocator<int> ta2(&allocs2, &deallocs2, 2);
+
+  xyz::copy_on_write<int, tracking_allocator<int>> a(std::allocator_arg, ta1, 10);
+  xyz::copy_on_write<int, tracking_allocator<int>> b(std::allocator_arg, ta2, 20);
+
+  b = a;
+
+  EXPECT_EQ(*b, 10);
+  EXPECT_EQ(b.get_allocator(), ta2); // allocator not propagated (POCCA = false)
+  EXPECT_EQ(allocs2, 2);             // one for construction, one for copy assignment
+}

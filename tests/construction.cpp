@@ -3,6 +3,7 @@
 #include <copy_on_write.hpp>
 #include <gtest/gtest.h>
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -207,4 +208,18 @@ TEST(Construction, DeductionGuideFromAllocArgValue)
   auto x = xyz::copy_on_write(std::allocator_arg, std::allocator<double>{}, 3.14);
   static_assert(std::is_same_v<decltype(x), xyz::copy_on_write<double, std::allocator<double>>>);
   EXPECT_DOUBLE_EQ(*x, 3.14);
+}
+
+// ---------------------------------------------------------------------------
+// Exception safety: _make_model catch path
+// ---------------------------------------------------------------------------
+
+TEST(Construction, ExceptionInValueConstructorPropagates)
+{
+  struct ThrowOnConstruct
+  {
+    ThrowOnConstruct() { throw std::runtime_error("throws"); }
+  };
+
+  EXPECT_THROW(xyz::copy_on_write<ThrowOnConstruct>(), std::runtime_error);
 }
