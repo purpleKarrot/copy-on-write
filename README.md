@@ -405,33 +405,6 @@ class copy_on_write {
 
   void swap(copy_on_write& other) noexcept(see below);
 
-  friend void swap(
-    copy_on_write& lhs,
-    copy_on_write& rhs) noexcept(noexcept(lhs.swap(rhs)));
-
-  template <class U, class AA>
-  friend bool operator==(
-    const copy_on_write& lhs,
-    const copy_on_write<U, AA>& rhs)
-    noexcept(see below);
-
-  template <class U>
-  friend bool operator==(
-    const copy_on_write& lhs,
-    const U& rhs) noexcept(see below);
-
-  template <class U, class AA>
-  friend auto operator<=>(
-    const copy_on_write& lhs,
-    const copy_on_write<U, AA>& rhs)
-    -> synth-three-way-result<T, U>;
-
-  template <class U>
-  friend auto operator<=>(
-    const copy_on_write& lhs,
-    const U& rhs)
-    -> synth-three-way-result<T, U>;
-
  private:
   Allocator alloc = Allocator();  // exposition only
   /* unspecified */ p;            // exposition only
@@ -445,6 +418,34 @@ copy_on_write(allocator_arg_t, Allocator, Value)
   -> copy_on_write<Value,
        typename allocator_traits<Allocator>
          ::template rebind_alloc<Value>>;
+
+template <class T, class A>
+void swap(
+  copy_on_write<T, A>& lhs,
+  copy_on_write<T, A>& rhs) noexcept(noexcept(lhs.swap(rhs)));
+
+template <class T1, class A1, class T2, class A2>
+bool operator==(
+  const copy_on_write<T1, A1>& lhs,
+  const copy_on_write<T2, A2>& rhs)
+  noexcept(see below);
+
+template <class T, class A, class U>
+bool operator==(
+  const copy_on_write<T, A>& lhs,
+  const U& rhs) noexcept(see below);
+
+template <class T1, class A1, class T2, class A2>
+auto operator<=>(
+  const copy_on_write<T1, A1>& lhs,
+  const copy_on_write<T2, A2>& rhs)
+  -> synth-three-way-result<T1, T2>;
+
+template <class T, class A, class U>
+auto operator<=>(
+  const copy_on_write<T, A>& lhs,
+  const U& rhs)
+  -> synth-three-way-result<T, U>;
 ```
 
 ### X.Y.3 Constructors [cow.ctor]
@@ -812,9 +813,10 @@ void swap(copy_on_write& other)
   objects directly. —_end note_\]
 
 ```cpp
-friend void swap(
-  copy_on_write& lhs,
-  copy_on_write& rhs) noexcept(noexcept(lhs.swap(rhs)));
+template <class T, class A>
+void swap(
+  copy_on_write<T, A>& lhs,
+  copy_on_write<T, A>& rhs) noexcept(noexcept(lhs.swap(rhs)));
 ```
 
 - _Effects_: Equivalent to `lhs.swap(rhs)`.
@@ -822,10 +824,10 @@ friend void swap(
 ### X.Y.9 Relational operators [cow.relops]
 
 ```cpp
-template <class U, class AA>
-friend bool operator==(
-  const copy_on_write& lhs,
-  const copy_on_write<U, AA>& rhs)
+template <class T1, class A1, class T2, class A2>
+bool operator==(
+  const copy_on_write<T1, A1>& lhs,
+  const copy_on_write<T2, A2>& rhs)
   noexcept(noexcept(*lhs == *rhs));
 ```
 
@@ -837,11 +839,11 @@ friend bool operator==(
   `true`, `true`. Otherwise, `*lhs == *rhs`.
 
 ```cpp
-template <class U, class AA>
-friend auto operator<=>(
-  const copy_on_write& lhs,
-  const copy_on_write<U, AA>& rhs)
-  -> synth-three-way-result<T, U>;
+template <class T1, class A1, class T2, class A2>
+auto operator<=>(
+  const copy_on_write<T1, A1>& lhs,
+  const copy_on_write<T2, A2>& rhs)
+  -> synth-three-way-result<T1, T2>;
 ```
 
 - _Returns_: If `lhs` is valueless or `rhs` is valueless,
@@ -852,9 +854,9 @@ friend auto operator<=>(
 ### X.Y.10 Comparison with T [cow.comp.with.t]
 
 ```cpp
-template <class U>
-friend bool operator==(
-  const copy_on_write& lhs,
+template <class T, class A, class U>
+bool operator==(
+  const copy_on_write<T, A>& lhs,
   const U& rhs) noexcept(noexcept(*lhs == rhs));
 ```
 
@@ -863,9 +865,9 @@ friend bool operator==(
 - _Returns_: If `lhs` is valueless, `false`; otherwise `*lhs == rhs`.
 
 ```cpp
-template <class U>
-friend auto operator<=>(
-  const copy_on_write& lhs,
+template <class T, class A, class U>
+auto operator<=>(
+  const copy_on_write<T, A>& lhs,
   const U& rhs)
   -> synth-three-way-result<T, U>;
 ```
