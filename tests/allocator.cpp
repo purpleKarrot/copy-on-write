@@ -129,6 +129,29 @@ struct pocs_allocator : tracking_allocator<T>
   }
 };
 
+template <typename T>
+struct soccc_allocator : tracking_allocator<T>
+{
+  template <typename U>
+  struct rebind
+  {
+    using other = soccc_allocator<U>;
+  };
+
+  using tracking_allocator<T>::tracking_allocator;
+
+  template <typename U>
+  soccc_allocator(soccc_allocator<U> const& o) noexcept
+    : tracking_allocator<T>(o)
+  {
+  }
+
+  soccc_allocator select_on_container_copy_construction() const noexcept
+  {
+    return soccc_allocator{};
+  }
+};
+
 } // namespace
 
 // ---------------------------------------------------------------------------
@@ -348,17 +371,14 @@ TEST(Allocator, AllocArgMoveConstructorDifferentAllocatorAllocatesNewModel)
 
 TEST(Allocator, CopyConstructorWithDivergingAllocatorAllocatesNewModel)
 {
-  // pmr::polymorphic_allocator::select_on_container_copy_construction() returns
-  // an allocator using the *default* memory resource, which differs from the
-  // custom pool, so the copy constructor takes the else branch.
-  std::array<std::byte, 1024> buf;
-  std::pmr::monotonic_buffer_resource pool(buf.data(), buf.size());
-  std::pmr::polymorphic_allocator<int> pmr_alloc(&pool);
+  int allocs = 0, deallocs = 0;
+  soccc_allocator<int> da(&allocs, &deallocs, 1);
 
-  xyz::pmr::copy_on_write<int> a(std::allocator_arg, pmr_alloc, 42);
-  xyz::pmr::copy_on_write<int> b(a);
+  xyz::copy_on_write<int, soccc_allocator<int>> a(std::allocator_arg, da, 42);
+  xyz::copy_on_write<int, soccc_allocator<int>> b(a);
 
-  EXPECT_FALSE(a.identical_to(b)); // fresh model allocated
+  EXPECT_FALSE(a.identical_to(b));           // fresh model allocated
+  EXPECT_NE(a.get_allocator(), b.get_allocator()); // allocators diverged
   EXPECT_EQ(*a, 42);
   EXPECT_EQ(*b, 42);
 }
