@@ -52,14 +52,17 @@ public:
 };
 ```
 
-Storing undo history as `std::vector<document>` requires a full deep copy of all
-lines on every recorded state. Using `std::shared_ptr` avoids copies but breaks
-value semantics: modifying a shared document through one observer would affect
-all observers.
+A text editor might open the same document in multiple independent views — split
+panes, a diff viewer, or a print preview — each requiring its own snapshot of the
+content. Since these views mostly read the document without modifying it,
+creating a full deep copy of all lines for each new view is wasteful. Using
+`std::shared_ptr` avoids the copies but breaks value semantics: edits in one
+view would silently affect all others.
 
-`copy_on_write<T>` provides a middle ground. Multiple objects share the
-underlying data, paying only an atomic reference-count increment on copy. A copy
-of the data is made only when one of the sharing objects needs to mutate it.
+`copy_on_write<T>` provides a middle ground. Multiple views share the underlying
+data, paying only an atomic reference-count increment when a new view is opened.
+A copy of the data is made only when one of the sharing views needs to mutate it,
+which is the uncommon case.
 
 ## Composing Cheaply-Copyable Types
 
