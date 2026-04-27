@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/runner/work/copy-on-write/copy-on-write/build/cmake_install.cmake",
+		"/home/runner/work/copy-on-write/copy-on-write/build/tests/cmake_install.cmake",
+		"/home/runner/work/copy-on-write/copy-on-write/build/_deps/doctest-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

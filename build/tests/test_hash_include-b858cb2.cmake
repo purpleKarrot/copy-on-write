@@ -1,0 +1,5 @@
+if(EXISTS "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash_tests-b858cb2.cmake")
+  include("/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash_tests-b858cb2.cmake")
+else()
+  add_test(test_hash_NOT_BUILT-b858cb2 test_hash_NOT_BUILT-b858cb2)
+endif()

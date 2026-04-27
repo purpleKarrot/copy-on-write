@@ -1,0 +1,92 @@
+default constructor value-initializes T 1 0.00154805
+default constructor with std::string 1 0.00142532
+single-value constructor stores the value 1 0.00131017
+single-value constructor with lvalue 1 0.00132375
+single-value constructor with rvalue 1 0.00132589
+in-place constructor with multiple arguments 1 0.00127869
+in-place constructor with initializer list 1 0.00145391
+in-place constructor with initializer list and extra args 1 0.00163197
+allocator_arg default constructor stores default value 1 0.00137538
+allocator_arg single-value constructor 1 0.0013101
+allocator_arg in-place constructor 1 0.00126442
+allocator_arg in-place initializer-list constructor 1 0.00126007
+copy constructor shares ownership 1 0.0012652
+copy constructor preserves value 1 0.00138731
+move constructor transfers ownership, source becomes valueless 1 0.0013032
+move constructor use_count stays 1 1 0.00122999
+allocator_arg copy constructor with same allocator shares model 1 0.00131068
+allocator_arg move constructor with same allocator transfers model 1 0.00130109
+deduction guide from value 1 0.00130625
+deduction guide from allocator_arg + value 1 0.00124596
+operator* returns const reference to stored value 1 0.00127104
+operator* reflects value changes via modify 1 0.00128596
+operator-> provides const access to member 1 0.0012778
+valueless_after_move is false for a live object 1 0.0012966
+valueless_after_move is true after move construction 1 0.00124141
+valueless_after_move is true after move assignment 1 0.0014538
+get_allocator returns the allocator used at construction 1 0.00126663
+use_count is 1 for a freshly constructed object 1 0.0013102
+use_count is 2 after copy construction 1 0.00175357
+use_count decrements when a sharing copy is destroyed 1 0.00213859
+use_count is 1 after move construction 1 0.00179765
+identical_to is true for copies sharing the same buffer 1 0.00169407
+identical_to is false for independently constructed objects with equal values 1 0.00212902
+identical_to is false after copy-on-write detach via modify 1 0.00172679
+modify(action) mutates value in-place when use_count == 1 1 0.00412945
+modify(action) deep-copies before mutating when use_count > 1 1 0.00170324
+modify(action) on shared object leaves original use_count at 1 1 0.00149216
+modify(action,transform) calls action in-place when unshared 1 0.00133016
+modify(action,transform) calls transform when shared 1 0.00133165
+modify(transform) produces the correct result when unshared 1 0.00128461
+modify(transform) produces the correct result when shared 1 0.00126612
+modify(transform) breaks sharing when use_count > 1 1 0.00125906
+member swap exchanges values 1 0.00125883
+member swap with valueless object 1 0.001245
+free swap delegates to member swap 1 0.00131122
+copy assignment sets the value 1 0.00125361
+copy assignment shares ownership 1 0.00127509
+copy self-assignment is a no-op 1 0.00123897
+copy assignment releases old value when it was the sole owner 1 0.00123765
+copy assignment from valueless object makes target valueless 1 0.00123681
+move assignment transfers value, source becomes valueless 1 0.00125937
+move self-assignment is a no-op 1 0.00131453
+move assignment use_count stays 1 on target 1 0.00132135
+move assignment from valueless object makes target valueless 1 0.00136577
+value assignment updates in-place when use_count == 1 1 0.00130692
+value assignment allocates a new model when shared 1 0.00128231
+value assignment with rvalue reference 1 0.00130338
+operator== returns true for equal values 1 0.00125717
+operator== returns false for different values 1 0.00127798
+operator== short-circuits via identical_to when sharing 1 0.00129917
+operator== both valueless are equal 1 0.00124598
+operator== one valueless, one live is not equal 1 0.00126031
+operator== with raw value returns true when equal 1 0.00133974
+operator== with raw value returns false when not equal 1 0.00135558
+operator== valueless with raw value returns false 1 0.00130182
+operator<=> equal values yields equivalent 1 0.00135772
+operator<=> less yields less 1 0.00145602
+operator<=> greater yields greater 1 0.00147084
+operator<=> both valueless yields equal 1 0.00155902
+operator<=> valueless is less than live 1 0.00135647
+operator<=> short-circuits via identical_to to equal when sharing 1 0.00129501
+operator<=> with raw value: equal 1 0.00134011
+operator<=> with raw value: less 1 0.00130925
+operator<=> with raw value: greater 1 0.00131095
+operator<=> valueless with raw value yields less 1 0.00128797
+comparison works for types that only provide operator< 1 0.0012979
+hash of live object equals hash of the stored value 1 0.00130755
+hash of valueless object returns SIZE_MAX 1 0.00130646
+two objects with equal values produce equal hashes 1 0.00128605
+two objects with different values generally produce different hashes 1 0.00124503
+copy_on_write can be used as key in std::unordered_map 1 0.00123615
+exactly one allocation per constructed object 1 0.00127007
+destructor deallocates when use_count drops to zero 1 0.00126212
+copy with same allocator shares the model (no extra allocation) 1 0.00125038
+copy with different allocator allocates a new model 1 0.00124943
+POCCA: allocator is propagated on copy assignment 1 0.00125122
+POCMA: allocator is propagated on move assignment 1 0.00127403
+without POCMA: move assignment with different allocators moves the value 1 0.00129041
+POCS: allocators are swapped on member swap 1 0.00129747
+pmr::copy_on_write works with monotonic_buffer_resource 1 0.00126872
+pmr::copy_on_write copy shares the model 1 0.00132201
+---

@@ -1,0 +1,1914 @@
+Start testing: Apr 27 06:44 UTC
+----------------------------------------------------------
+1/91 Testing: default constructor value-initializes T
+1/91 Test: default constructor value-initializes T
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=default constructor value-initializes T"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"default constructor value-initializes T" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"default constructor value-initializes T" end time: Apr 27 06:44 UTC
+"default constructor value-initializes T" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/91 Testing: default constructor with std::string
+2/91 Test: default constructor with std::string
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=default constructor with std::string"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"default constructor with std::string" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"default constructor with std::string" end time: Apr 27 06:44 UTC
+"default constructor with std::string" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/91 Testing: single-value constructor stores the value
+3/91 Test: single-value constructor stores the value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=single-value constructor stores the value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"single-value constructor stores the value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"single-value constructor stores the value" end time: Apr 27 06:44 UTC
+"single-value constructor stores the value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/91 Testing: single-value constructor with lvalue
+4/91 Test: single-value constructor with lvalue
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=single-value constructor with lvalue"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"single-value constructor with lvalue" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"single-value constructor with lvalue" end time: Apr 27 06:44 UTC
+"single-value constructor with lvalue" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/91 Testing: single-value constructor with rvalue
+5/91 Test: single-value constructor with rvalue
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=single-value constructor with rvalue"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"single-value constructor with rvalue" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"single-value constructor with rvalue" end time: Apr 27 06:44 UTC
+"single-value constructor with rvalue" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/91 Testing: in-place constructor with multiple arguments
+6/91 Test: in-place constructor with multiple arguments
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=in-place constructor with multiple arguments"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"in-place constructor with multiple arguments" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"in-place constructor with multiple arguments" end time: Apr 27 06:44 UTC
+"in-place constructor with multiple arguments" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/91 Testing: in-place constructor with initializer list
+7/91 Test: in-place constructor with initializer list
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=in-place constructor with initializer list"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"in-place constructor with initializer list" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"in-place constructor with initializer list" end time: Apr 27 06:44 UTC
+"in-place constructor with initializer list" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/91 Testing: in-place constructor with initializer list and extra args
+8/91 Test: in-place constructor with initializer list and extra args
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=in-place constructor with initializer list and extra args"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"in-place constructor with initializer list and extra args" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"in-place constructor with initializer list and extra args" end time: Apr 27 06:44 UTC
+"in-place constructor with initializer list and extra args" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/91 Testing: allocator_arg default constructor stores default value
+9/91 Test: allocator_arg default constructor stores default value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=allocator_arg default constructor stores default value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"allocator_arg default constructor stores default value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"allocator_arg default constructor stores default value" end time: Apr 27 06:44 UTC
+"allocator_arg default constructor stores default value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/91 Testing: allocator_arg single-value constructor
+10/91 Test: allocator_arg single-value constructor
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=allocator_arg single-value constructor"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"allocator_arg single-value constructor" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"allocator_arg single-value constructor" end time: Apr 27 06:44 UTC
+"allocator_arg single-value constructor" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/91 Testing: allocator_arg in-place constructor
+11/91 Test: allocator_arg in-place constructor
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=allocator_arg in-place constructor"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"allocator_arg in-place constructor" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"allocator_arg in-place constructor" end time: Apr 27 06:44 UTC
+"allocator_arg in-place constructor" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/91 Testing: allocator_arg in-place initializer-list constructor
+12/91 Test: allocator_arg in-place initializer-list constructor
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=allocator_arg in-place initializer-list constructor"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"allocator_arg in-place initializer-list constructor" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"allocator_arg in-place initializer-list constructor" end time: Apr 27 06:44 UTC
+"allocator_arg in-place initializer-list constructor" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/91 Testing: copy constructor shares ownership
+13/91 Test: copy constructor shares ownership
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=copy constructor shares ownership"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy constructor shares ownership" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 4 | 4 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy constructor shares ownership" end time: Apr 27 06:44 UTC
+"copy constructor shares ownership" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/91 Testing: copy constructor preserves value
+14/91 Test: copy constructor preserves value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=copy constructor preserves value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy constructor preserves value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy constructor preserves value" end time: Apr 27 06:44 UTC
+"copy constructor preserves value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/91 Testing: move constructor transfers ownership, source becomes valueless
+15/91 Test: move constructor transfers ownership, source becomes valueless
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=move constructor transfers ownership\, source becomes valueless"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"move constructor transfers ownership, source becomes valueless" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"move constructor transfers ownership, source becomes valueless" end time: Apr 27 06:44 UTC
+"move constructor transfers ownership, source becomes valueless" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/91 Testing: move constructor use_count stays 1
+16/91 Test: move constructor use_count stays 1
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=move constructor use_count stays 1"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"move constructor use_count stays 1" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"move constructor use_count stays 1" end time: Apr 27 06:44 UTC
+"move constructor use_count stays 1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/91 Testing: allocator_arg copy constructor with same allocator shares model
+17/91 Test: allocator_arg copy constructor with same allocator shares model
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=allocator_arg copy constructor with same allocator shares model"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"allocator_arg copy constructor with same allocator shares model" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"allocator_arg copy constructor with same allocator shares model" end time: Apr 27 06:44 UTC
+"allocator_arg copy constructor with same allocator shares model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/91 Testing: allocator_arg move constructor with same allocator transfers model
+18/91 Test: allocator_arg move constructor with same allocator transfers model
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=allocator_arg move constructor with same allocator transfers model"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"allocator_arg move constructor with same allocator transfers model" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"allocator_arg move constructor with same allocator transfers model" end time: Apr 27 06:44 UTC
+"allocator_arg move constructor with same allocator transfers model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/91 Testing: deduction guide from value
+19/91 Test: deduction guide from value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=deduction guide from value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"deduction guide from value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"deduction guide from value" end time: Apr 27 06:44 UTC
+"deduction guide from value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/91 Testing: deduction guide from allocator_arg + value
+20/91 Test: deduction guide from allocator_arg + value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_construction" "--test-case=deduction guide from allocator_arg + value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"deduction guide from allocator_arg + value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 19 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"deduction guide from allocator_arg + value" end time: Apr 27 06:44 UTC
+"deduction guide from allocator_arg + value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/91 Testing: operator* returns const reference to stored value
+21/91 Test: operator* returns const reference to stored value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=operator* returns const reference to stored value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator* returns const reference to stored value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator* returns const reference to stored value" end time: Apr 27 06:44 UTC
+"operator* returns const reference to stored value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/91 Testing: operator* reflects value changes via modify
+22/91 Test: operator* reflects value changes via modify
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=operator* reflects value changes via modify"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator* reflects value changes via modify" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator* reflects value changes via modify" end time: Apr 27 06:44 UTC
+"operator* reflects value changes via modify" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/91 Testing: operator-> provides const access to member
+23/91 Test: operator-> provides const access to member
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=operator-> provides const access to member"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator-> provides const access to member" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator-> provides const access to member" end time: Apr 27 06:44 UTC
+"operator-> provides const access to member" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/91 Testing: valueless_after_move is false for a live object
+24/91 Test: valueless_after_move is false for a live object
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=valueless_after_move is false for a live object"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"valueless_after_move is false for a live object" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"valueless_after_move is false for a live object" end time: Apr 27 06:44 UTC
+"valueless_after_move is false for a live object" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/91 Testing: valueless_after_move is true after move construction
+25/91 Test: valueless_after_move is true after move construction
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=valueless_after_move is true after move construction"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"valueless_after_move is true after move construction" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"valueless_after_move is true after move construction" end time: Apr 27 06:44 UTC
+"valueless_after_move is true after move construction" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/91 Testing: valueless_after_move is true after move assignment
+26/91 Test: valueless_after_move is true after move assignment
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=valueless_after_move is true after move assignment"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"valueless_after_move is true after move assignment" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"valueless_after_move is true after move assignment" end time: Apr 27 06:44 UTC
+"valueless_after_move is true after move assignment" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/91 Testing: get_allocator returns the allocator used at construction
+27/91 Test: get_allocator returns the allocator used at construction
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=get_allocator returns the allocator used at construction"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"get_allocator returns the allocator used at construction" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"get_allocator returns the allocator used at construction" end time: Apr 27 06:44 UTC
+"get_allocator returns the allocator used at construction" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/91 Testing: use_count is 1 for a freshly constructed object
+28/91 Test: use_count is 1 for a freshly constructed object
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=use_count is 1 for a freshly constructed object"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"use_count is 1 for a freshly constructed object" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"use_count is 1 for a freshly constructed object" end time: Apr 27 06:44 UTC
+"use_count is 1 for a freshly constructed object" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/91 Testing: use_count is 2 after copy construction
+29/91 Test: use_count is 2 after copy construction
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=use_count is 2 after copy construction"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"use_count is 2 after copy construction" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"use_count is 2 after copy construction" end time: Apr 27 06:44 UTC
+"use_count is 2 after copy construction" time elapsed: 00:00:00
+----------------------------------------------------------
+
+30/91 Testing: use_count decrements when a sharing copy is destroyed
+30/91 Test: use_count decrements when a sharing copy is destroyed
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=use_count decrements when a sharing copy is destroyed"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"use_count decrements when a sharing copy is destroyed" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"use_count decrements when a sharing copy is destroyed" end time: Apr 27 06:44 UTC
+"use_count decrements when a sharing copy is destroyed" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/91 Testing: use_count is 1 after move construction
+31/91 Test: use_count is 1 after move construction
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=use_count is 1 after move construction"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"use_count is 1 after move construction" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"use_count is 1 after move construction" end time: Apr 27 06:44 UTC
+"use_count is 1 after move construction" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/91 Testing: identical_to is true for copies sharing the same buffer
+32/91 Test: identical_to is true for copies sharing the same buffer
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=identical_to is true for copies sharing the same buffer"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"identical_to is true for copies sharing the same buffer" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"identical_to is true for copies sharing the same buffer" end time: Apr 27 06:44 UTC
+"identical_to is true for copies sharing the same buffer" time elapsed: 00:00:00
+----------------------------------------------------------
+
+33/91 Testing: identical_to is false for independently constructed objects with equal values
+33/91 Test: identical_to is false for independently constructed objects with equal values
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=identical_to is false for independently constructed objects with equal values"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"identical_to is false for independently constructed objects with equal values" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"identical_to is false for independently constructed objects with equal values" end time: Apr 27 06:44 UTC
+"identical_to is false for independently constructed objects with equal values" time elapsed: 00:00:00
+----------------------------------------------------------
+
+34/91 Testing: identical_to is false after copy-on-write detach via modify
+34/91 Test: identical_to is false after copy-on-write detach via modify
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_observers" "--test-case=identical_to is false after copy-on-write detach via modify"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"identical_to is false after copy-on-write detach via modify" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 13 skipped
+[doctest] assertions: 4 | 4 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"identical_to is false after copy-on-write detach via modify" end time: Apr 27 06:44 UTC
+"identical_to is false after copy-on-write detach via modify" time elapsed: 00:00:00
+----------------------------------------------------------
+
+35/91 Testing: modify(action) mutates value in-place when use_count == 1
+35/91 Test: modify(action) mutates value in-place when use_count == 1
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(action) mutates value in-place when use_count == 1"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(action) mutates value in-place when use_count == 1" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(action) mutates value in-place when use_count == 1" end time: Apr 27 06:44 UTC
+"modify(action) mutates value in-place when use_count == 1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+36/91 Testing: modify(action) deep-copies before mutating when use_count > 1
+36/91 Test: modify(action) deep-copies before mutating when use_count > 1
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(action) deep-copies before mutating when use_count > 1"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(action) deep-copies before mutating when use_count > 1" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 4 | 4 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(action) deep-copies before mutating when use_count > 1" end time: Apr 27 06:44 UTC
+"modify(action) deep-copies before mutating when use_count > 1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+37/91 Testing: modify(action) on shared object leaves original use_count at 1
+37/91 Test: modify(action) on shared object leaves original use_count at 1
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(action) on shared object leaves original use_count at 1"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(action) on shared object leaves original use_count at 1" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(action) on shared object leaves original use_count at 1" end time: Apr 27 06:44 UTC
+"modify(action) on shared object leaves original use_count at 1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+38/91 Testing: modify(action,transform) calls action in-place when unshared
+38/91 Test: modify(action,transform) calls action in-place when unshared
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(action\,transform) calls action in-place when unshared"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(action,transform) calls action in-place when unshared" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(action,transform) calls action in-place when unshared" end time: Apr 27 06:44 UTC
+"modify(action,transform) calls action in-place when unshared" time elapsed: 00:00:00
+----------------------------------------------------------
+
+39/91 Testing: modify(action,transform) calls transform when shared
+39/91 Test: modify(action,transform) calls transform when shared
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(action\,transform) calls transform when shared"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(action,transform) calls transform when shared" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 4 | 4 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(action,transform) calls transform when shared" end time: Apr 27 06:44 UTC
+"modify(action,transform) calls transform when shared" time elapsed: 00:00:00
+----------------------------------------------------------
+
+40/91 Testing: modify(transform) produces the correct result when unshared
+40/91 Test: modify(transform) produces the correct result when unshared
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(transform) produces the correct result when unshared"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(transform) produces the correct result when unshared" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(transform) produces the correct result when unshared" end time: Apr 27 06:44 UTC
+"modify(transform) produces the correct result when unshared" time elapsed: 00:00:00
+----------------------------------------------------------
+
+41/91 Testing: modify(transform) produces the correct result when shared
+41/91 Test: modify(transform) produces the correct result when shared
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(transform) produces the correct result when shared"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(transform) produces the correct result when shared" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(transform) produces the correct result when shared" end time: Apr 27 06:44 UTC
+"modify(transform) produces the correct result when shared" time elapsed: 00:00:00
+----------------------------------------------------------
+
+42/91 Testing: modify(transform) breaks sharing when use_count > 1
+42/91 Test: modify(transform) breaks sharing when use_count > 1
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=modify(transform) breaks sharing when use_count > 1"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"modify(transform) breaks sharing when use_count > 1" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"modify(transform) breaks sharing when use_count > 1" end time: Apr 27 06:44 UTC
+"modify(transform) breaks sharing when use_count > 1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+43/91 Testing: member swap exchanges values
+43/91 Test: member swap exchanges values
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=member swap exchanges values"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"member swap exchanges values" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"member swap exchanges values" end time: Apr 27 06:44 UTC
+"member swap exchanges values" time elapsed: 00:00:00
+----------------------------------------------------------
+
+44/91 Testing: member swap with valueless object
+44/91 Test: member swap with valueless object
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=member swap with valueless object"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"member swap with valueless object" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"member swap with valueless object" end time: Apr 27 06:44 UTC
+"member swap with valueless object" time elapsed: 00:00:00
+----------------------------------------------------------
+
+45/91 Testing: free swap delegates to member swap
+45/91 Test: free swap delegates to member swap
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_modifiers" "--test-case=free swap delegates to member swap"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"free swap delegates to member swap" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 10 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"free swap delegates to member swap" end time: Apr 27 06:44 UTC
+"free swap delegates to member swap" time elapsed: 00:00:00
+----------------------------------------------------------
+
+46/91 Testing: copy assignment sets the value
+46/91 Test: copy assignment sets the value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=copy assignment sets the value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy assignment sets the value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy assignment sets the value" end time: Apr 27 06:44 UTC
+"copy assignment sets the value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+47/91 Testing: copy assignment shares ownership
+47/91 Test: copy assignment shares ownership
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=copy assignment shares ownership"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy assignment shares ownership" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy assignment shares ownership" end time: Apr 27 06:44 UTC
+"copy assignment shares ownership" time elapsed: 00:00:00
+----------------------------------------------------------
+
+48/91 Testing: copy self-assignment is a no-op
+48/91 Test: copy self-assignment is a no-op
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=copy self-assignment is a no-op"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy self-assignment is a no-op" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy self-assignment is a no-op" end time: Apr 27 06:44 UTC
+"copy self-assignment is a no-op" time elapsed: 00:00:00
+----------------------------------------------------------
+
+49/91 Testing: copy assignment releases old value when it was the sole owner
+49/91 Test: copy assignment releases old value when it was the sole owner
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=copy assignment releases old value when it was the sole owner"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy assignment releases old value when it was the sole owner" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy assignment releases old value when it was the sole owner" end time: Apr 27 06:44 UTC
+"copy assignment releases old value when it was the sole owner" time elapsed: 00:00:00
+----------------------------------------------------------
+
+50/91 Testing: copy assignment from valueless object makes target valueless
+50/91 Test: copy assignment from valueless object makes target valueless
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=copy assignment from valueless object makes target valueless"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy assignment from valueless object makes target valueless" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy assignment from valueless object makes target valueless" end time: Apr 27 06:44 UTC
+"copy assignment from valueless object makes target valueless" time elapsed: 00:00:00
+----------------------------------------------------------
+
+51/91 Testing: move assignment transfers value, source becomes valueless
+51/91 Test: move assignment transfers value, source becomes valueless
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=move assignment transfers value\, source becomes valueless"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"move assignment transfers value, source becomes valueless" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"move assignment transfers value, source becomes valueless" end time: Apr 27 06:44 UTC
+"move assignment transfers value, source becomes valueless" time elapsed: 00:00:00
+----------------------------------------------------------
+
+52/91 Testing: move self-assignment is a no-op
+52/91 Test: move self-assignment is a no-op
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=move self-assignment is a no-op"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"move self-assignment is a no-op" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"move self-assignment is a no-op" end time: Apr 27 06:44 UTC
+"move self-assignment is a no-op" time elapsed: 00:00:00
+----------------------------------------------------------
+
+53/91 Testing: move assignment use_count stays 1 on target
+53/91 Test: move assignment use_count stays 1 on target
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=move assignment use_count stays 1 on target"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"move assignment use_count stays 1 on target" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"move assignment use_count stays 1 on target" end time: Apr 27 06:44 UTC
+"move assignment use_count stays 1 on target" time elapsed: 00:00:00
+----------------------------------------------------------
+
+54/91 Testing: move assignment from valueless object makes target valueless
+54/91 Test: move assignment from valueless object makes target valueless
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=move assignment from valueless object makes target valueless"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"move assignment from valueless object makes target valueless" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"move assignment from valueless object makes target valueless" end time: Apr 27 06:44 UTC
+"move assignment from valueless object makes target valueless" time elapsed: 00:00:00
+----------------------------------------------------------
+
+55/91 Testing: value assignment updates in-place when use_count == 1
+55/91 Test: value assignment updates in-place when use_count == 1
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=value assignment updates in-place when use_count == 1"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"value assignment updates in-place when use_count == 1" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"value assignment updates in-place when use_count == 1" end time: Apr 27 06:44 UTC
+"value assignment updates in-place when use_count == 1" time elapsed: 00:00:00
+----------------------------------------------------------
+
+56/91 Testing: value assignment allocates a new model when shared
+56/91 Test: value assignment allocates a new model when shared
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=value assignment allocates a new model when shared"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"value assignment allocates a new model when shared" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 5 | 5 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"value assignment allocates a new model when shared" end time: Apr 27 06:44 UTC
+"value assignment allocates a new model when shared" time elapsed: 00:00:00
+----------------------------------------------------------
+
+57/91 Testing: value assignment with rvalue reference
+57/91 Test: value assignment with rvalue reference
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_assignment" "--test-case=value assignment with rvalue reference"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"value assignment with rvalue reference" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 11 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"value assignment with rvalue reference" end time: Apr 27 06:44 UTC
+"value assignment with rvalue reference" time elapsed: 00:00:00
+----------------------------------------------------------
+
+58/91 Testing: operator== returns true for equal values
+58/91 Test: operator== returns true for equal values
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== returns true for equal values"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== returns true for equal values" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== returns true for equal values" end time: Apr 27 06:44 UTC
+"operator== returns true for equal values" time elapsed: 00:00:00
+----------------------------------------------------------
+
+59/91 Testing: operator== returns false for different values
+59/91 Test: operator== returns false for different values
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== returns false for different values"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== returns false for different values" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== returns false for different values" end time: Apr 27 06:44 UTC
+"operator== returns false for different values" time elapsed: 00:00:00
+----------------------------------------------------------
+
+60/91 Testing: operator== short-circuits via identical_to when sharing
+60/91 Test: operator== short-circuits via identical_to when sharing
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== short-circuits via identical_to when sharing"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== short-circuits via identical_to when sharing" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== short-circuits via identical_to when sharing" end time: Apr 27 06:44 UTC
+"operator== short-circuits via identical_to when sharing" time elapsed: 00:00:00
+----------------------------------------------------------
+
+61/91 Testing: operator== both valueless are equal
+61/91 Test: operator== both valueless are equal
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== both valueless are equal"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== both valueless are equal" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== both valueless are equal" end time: Apr 27 06:44 UTC
+"operator== both valueless are equal" time elapsed: 00:00:00
+----------------------------------------------------------
+
+62/91 Testing: operator== one valueless, one live is not equal
+62/91 Test: operator== one valueless, one live is not equal
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== one valueless\, one live is not equal"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== one valueless, one live is not equal" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== one valueless, one live is not equal" end time: Apr 27 06:44 UTC
+"operator== one valueless, one live is not equal" time elapsed: 00:00:00
+----------------------------------------------------------
+
+63/91 Testing: operator== with raw value returns true when equal
+63/91 Test: operator== with raw value returns true when equal
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== with raw value returns true when equal"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== with raw value returns true when equal" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== with raw value returns true when equal" end time: Apr 27 06:44 UTC
+"operator== with raw value returns true when equal" time elapsed: 00:00:00
+----------------------------------------------------------
+
+64/91 Testing: operator== with raw value returns false when not equal
+64/91 Test: operator== with raw value returns false when not equal
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== with raw value returns false when not equal"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== with raw value returns false when not equal" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== with raw value returns false when not equal" end time: Apr 27 06:44 UTC
+"operator== with raw value returns false when not equal" time elapsed: 00:00:00
+----------------------------------------------------------
+
+65/91 Testing: operator== valueless with raw value returns false
+65/91 Test: operator== valueless with raw value returns false
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator== valueless with raw value returns false"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator== valueless with raw value returns false" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator== valueless with raw value returns false" end time: Apr 27 06:44 UTC
+"operator== valueless with raw value returns false" time elapsed: 00:00:00
+----------------------------------------------------------
+
+66/91 Testing: operator<=> equal values yields equivalent
+66/91 Test: operator<=> equal values yields equivalent
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> equal values yields equivalent"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> equal values yields equivalent" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> equal values yields equivalent" end time: Apr 27 06:44 UTC
+"operator<=> equal values yields equivalent" time elapsed: 00:00:00
+----------------------------------------------------------
+
+67/91 Testing: operator<=> less yields less
+67/91 Test: operator<=> less yields less
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> less yields less"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> less yields less" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> less yields less" end time: Apr 27 06:44 UTC
+"operator<=> less yields less" time elapsed: 00:00:00
+----------------------------------------------------------
+
+68/91 Testing: operator<=> greater yields greater
+68/91 Test: operator<=> greater yields greater
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> greater yields greater"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> greater yields greater" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> greater yields greater" end time: Apr 27 06:44 UTC
+"operator<=> greater yields greater" time elapsed: 00:00:00
+----------------------------------------------------------
+
+69/91 Testing: operator<=> both valueless yields equal
+69/91 Test: operator<=> both valueless yields equal
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> both valueless yields equal"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> both valueless yields equal" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> both valueless yields equal" end time: Apr 27 06:44 UTC
+"operator<=> both valueless yields equal" time elapsed: 00:00:00
+----------------------------------------------------------
+
+70/91 Testing: operator<=> valueless is less than live
+70/91 Test: operator<=> valueless is less than live
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> valueless is less than live"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> valueless is less than live" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> valueless is less than live" end time: Apr 27 06:44 UTC
+"operator<=> valueless is less than live" time elapsed: 00:00:00
+----------------------------------------------------------
+
+71/91 Testing: operator<=> short-circuits via identical_to to equal when sharing
+71/91 Test: operator<=> short-circuits via identical_to to equal when sharing
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> short-circuits via identical_to to equal when sharing"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> short-circuits via identical_to to equal when sharing" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> short-circuits via identical_to to equal when sharing" end time: Apr 27 06:44 UTC
+"operator<=> short-circuits via identical_to to equal when sharing" time elapsed: 00:00:00
+----------------------------------------------------------
+
+72/91 Testing: operator<=> with raw value: equal
+72/91 Test: operator<=> with raw value: equal
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> with raw value: equal"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> with raw value: equal" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> with raw value: equal" end time: Apr 27 06:44 UTC
+"operator<=> with raw value: equal" time elapsed: 00:00:00
+----------------------------------------------------------
+
+73/91 Testing: operator<=> with raw value: less
+73/91 Test: operator<=> with raw value: less
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> with raw value: less"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> with raw value: less" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> with raw value: less" end time: Apr 27 06:44 UTC
+"operator<=> with raw value: less" time elapsed: 00:00:00
+----------------------------------------------------------
+
+74/91 Testing: operator<=> with raw value: greater
+74/91 Test: operator<=> with raw value: greater
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> with raw value: greater"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> with raw value: greater" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> with raw value: greater" end time: Apr 27 06:44 UTC
+"operator<=> with raw value: greater" time elapsed: 00:00:00
+----------------------------------------------------------
+
+75/91 Testing: operator<=> valueless with raw value yields less
+75/91 Test: operator<=> valueless with raw value yields less
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=operator<=> valueless with raw value yields less"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"operator<=> valueless with raw value yields less" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"operator<=> valueless with raw value yields less" end time: Apr 27 06:44 UTC
+"operator<=> valueless with raw value yields less" time elapsed: 00:00:00
+----------------------------------------------------------
+
+76/91 Testing: comparison works for types that only provide operator<
+76/91 Test: comparison works for types that only provide operator<
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_comparison" "--test-case=comparison works for types that only provide operator<"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"comparison works for types that only provide operator<" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 18 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"comparison works for types that only provide operator<" end time: Apr 27 06:44 UTC
+"comparison works for types that only provide operator<" time elapsed: 00:00:00
+----------------------------------------------------------
+
+77/91 Testing: hash of live object equals hash of the stored value
+77/91 Test: hash of live object equals hash of the stored value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash" "--test-case=hash of live object equals hash of the stored value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"hash of live object equals hash of the stored value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 4 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"hash of live object equals hash of the stored value" end time: Apr 27 06:44 UTC
+"hash of live object equals hash of the stored value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+78/91 Testing: hash of valueless object returns SIZE_MAX
+78/91 Test: hash of valueless object returns SIZE_MAX
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash" "--test-case=hash of valueless object returns SIZE_MAX"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"hash of valueless object returns SIZE_MAX" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 4 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"hash of valueless object returns SIZE_MAX" end time: Apr 27 06:44 UTC
+"hash of valueless object returns SIZE_MAX" time elapsed: 00:00:00
+----------------------------------------------------------
+
+79/91 Testing: two objects with equal values produce equal hashes
+79/91 Test: two objects with equal values produce equal hashes
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash" "--test-case=two objects with equal values produce equal hashes"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"two objects with equal values produce equal hashes" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 4 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"two objects with equal values produce equal hashes" end time: Apr 27 06:44 UTC
+"two objects with equal values produce equal hashes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+80/91 Testing: two objects with different values generally produce different hashes
+80/91 Test: two objects with different values generally produce different hashes
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash" "--test-case=two objects with different values generally produce different hashes"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"two objects with different values generally produce different hashes" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 4 skipped
+[doctest] assertions: 1 | 1 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"two objects with different values generally produce different hashes" end time: Apr 27 06:44 UTC
+"two objects with different values generally produce different hashes" time elapsed: 00:00:00
+----------------------------------------------------------
+
+81/91 Testing: copy_on_write can be used as key in std::unordered_map
+81/91 Test: copy_on_write can be used as key in std::unordered_map
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_hash" "--test-case=copy_on_write can be used as key in std::unordered_map"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy_on_write can be used as key in std::unordered_map" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 4 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy_on_write can be used as key in std::unordered_map" end time: Apr 27 06:44 UTC
+"copy_on_write can be used as key in std::unordered_map" time elapsed: 00:00:00
+----------------------------------------------------------
+
+82/91 Testing: exactly one allocation per constructed object
+82/91 Test: exactly one allocation per constructed object
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=exactly one allocation per constructed object"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"exactly one allocation per constructed object" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"exactly one allocation per constructed object" end time: Apr 27 06:44 UTC
+"exactly one allocation per constructed object" time elapsed: 00:00:00
+----------------------------------------------------------
+
+83/91 Testing: destructor deallocates when use_count drops to zero
+83/91 Test: destructor deallocates when use_count drops to zero
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=destructor deallocates when use_count drops to zero"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"destructor deallocates when use_count drops to zero" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"destructor deallocates when use_count drops to zero" end time: Apr 27 06:44 UTC
+"destructor deallocates when use_count drops to zero" time elapsed: 00:00:00
+----------------------------------------------------------
+
+84/91 Testing: copy with same allocator shares the model (no extra allocation)
+84/91 Test: copy with same allocator shares the model (no extra allocation)
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=copy with same allocator shares the model (no extra allocation)"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy with same allocator shares the model (no extra allocation)" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy with same allocator shares the model (no extra allocation)" end time: Apr 27 06:44 UTC
+"copy with same allocator shares the model (no extra allocation)" time elapsed: 00:00:00
+----------------------------------------------------------
+
+85/91 Testing: copy with different allocator allocates a new model
+85/91 Test: copy with different allocator allocates a new model
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=copy with different allocator allocates a new model"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"copy with different allocator allocates a new model" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"copy with different allocator allocates a new model" end time: Apr 27 06:44 UTC
+"copy with different allocator allocates a new model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+86/91 Testing: POCCA: allocator is propagated on copy assignment
+86/91 Test: POCCA: allocator is propagated on copy assignment
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=POCCA: allocator is propagated on copy assignment"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"POCCA: allocator is propagated on copy assignment" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"POCCA: allocator is propagated on copy assignment" end time: Apr 27 06:44 UTC
+"POCCA: allocator is propagated on copy assignment" time elapsed: 00:00:00
+----------------------------------------------------------
+
+87/91 Testing: POCMA: allocator is propagated on move assignment
+87/91 Test: POCMA: allocator is propagated on move assignment
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=POCMA: allocator is propagated on move assignment"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"POCMA: allocator is propagated on move assignment" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"POCMA: allocator is propagated on move assignment" end time: Apr 27 06:44 UTC
+"POCMA: allocator is propagated on move assignment" time elapsed: 00:00:00
+----------------------------------------------------------
+
+88/91 Testing: without POCMA: move assignment with different allocators moves the value
+88/91 Test: without POCMA: move assignment with different allocators moves the value
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=without POCMA: move assignment with different allocators moves the value"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"without POCMA: move assignment with different allocators moves the value" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"without POCMA: move assignment with different allocators moves the value" end time: Apr 27 06:44 UTC
+"without POCMA: move assignment with different allocators moves the value" time elapsed: 00:00:00
+----------------------------------------------------------
+
+89/91 Testing: POCS: allocators are swapped on member swap
+89/91 Test: POCS: allocators are swapped on member swap
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=POCS: allocators are swapped on member swap"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"POCS: allocators are swapped on member swap" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 4 | 4 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"POCS: allocators are swapped on member swap" end time: Apr 27 06:44 UTC
+"POCS: allocators are swapped on member swap" time elapsed: 00:00:00
+----------------------------------------------------------
+
+90/91 Testing: pmr::copy_on_write works with monotonic_buffer_resource
+90/91 Test: pmr::copy_on_write works with monotonic_buffer_resource
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=pmr::copy_on_write works with monotonic_buffer_resource"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"pmr::copy_on_write works with monotonic_buffer_resource" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"pmr::copy_on_write works with monotonic_buffer_resource" end time: Apr 27 06:44 UTC
+"pmr::copy_on_write works with monotonic_buffer_resource" time elapsed: 00:00:00
+----------------------------------------------------------
+
+91/91 Testing: pmr::copy_on_write copy shares the model
+91/91 Test: pmr::copy_on_write copy shares the model
+Command: "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator" "--test-case=pmr::copy_on_write copy shares the model"
+Directory: /home/runner/work/copy-on-write/copy-on-write/build/tests
+"pmr::copy_on_write copy shares the model" start time: Apr 27 06:44 UTC
+Output:
+----------------------------------------------------------
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+[doctest] test cases: 1 | 1 passed | 0 failed | 9 skipped
+[doctest] assertions: 2 | 2 passed | 0 failed |
+[doctest] Status: SUCCESS!
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"pmr::copy_on_write copy shares the model" end time: Apr 27 06:44 UTC
+"pmr::copy_on_write copy shares the model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Apr 27 06:44 UTC
