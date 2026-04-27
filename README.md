@@ -37,32 +37,33 @@ modification.
 ## Expensive Copies in Composite Classes
 
 When composite objects contain large or expensive-to-copy members, value
-semantics become costly. Consider a text editor that maintains a document as a
-sequence of lines:
+semantics become costly. Consider a spell-checker that maintains a dictionary
+as a sorted list of words:
 
 ```cpp
-class document {
-  std::vector<std::string> _lines;
+class dictionary {
+  std::vector<std::string> _words;
 public:
-  document() = default;
-  void append(std::string line) {
-    _lines.push_back(std::move(line));
+  dictionary() = default;
+  void add_word(std::string word) {
+    auto it = std::lower_bound(_words.begin(), _words.end(), word);
+    _words.insert(it, std::move(word));
   }
-  std::size_t line_count() const { return _lines.size(); }
+  bool contains(std::string_view word) const {
+    return std::binary_search(_words.begin(), _words.end(), word);
+  }
 };
 ```
 
-A text editor might open the same document in multiple independent views — split
-panes, a diff viewer, or a print preview — each requiring its own snapshot of the
-content. Since these views mostly read the document without modifying it,
-creating a full deep copy of all lines for each new view is wasteful. Using
-`std::shared_ptr` avoids the copies but breaks value semantics: edits in one
-view would silently affect all others.
+A spell-checker might load a shared system dictionary and give each open
+document its own copy, so that custom words added in one document do not appear
+in another. Since most documents never add any custom words, creating a full
+deep copy of the entire word list for each document is wasteful.
 
-`copy_on_write<T>` provides a middle ground. Multiple views share the underlying
-data, paying only an atomic reference-count increment when a new view is opened.
-A copy of the data is made only when one of the sharing views needs to mutate it,
-which is the uncommon case.
+`copy_on_write<T>` provides a middle ground. Multiple documents share the
+underlying word list, paying only an atomic reference-count increment when a
+new document is opened. A copy of the word list is made only when a document
+actually adds a custom word, which is the uncommon case.
 
 ## Composing Cheaply-Copyable Types
 
@@ -70,29 +71,32 @@ which is the uncommon case.
 their components are expensive to copy:
 
 ```cpp
-class document {
-  std::copy_on_write<std::vector<std::string>> _lines;
+class dictionary {
+  std::copy_on_write<std::vector<std::string>> _words;
 public:
-  document() = default;
+  dictionary() = default;
 
   // Copying is O(1): just an atomic increment.
-  document(const document&) noexcept = default;
-  document& operator=(const document&) noexcept = default;
+  dictionary(const dictionary&) noexcept = default;
+  dictionary& operator=(const dictionary&) noexcept = default;
 
   // Mutation copies the underlying data only if shared.
-  void append(std::string line) {
-    _lines.modify([&](std::vector<std::string>& v) {
-      v.push_back(std::move(line));
+  void add_word(std::string word) {
+    _words.modify([&](std::vector<std::string>& v) {
+      auto it = std::lower_bound(v.begin(), v.end(), word);
+      v.insert(it, std::move(word));
     });
   }
 
-  std::size_t line_count() const { return _lines->size(); }
+  bool contains(std::string_view word) const {
+    return std::binary_search(_words->begin(), _words->end(), word);
+  }
 };
 ```
 
 The class above has full value semantics — compiler-generated copy, move, and
 assignment work correctly — while avoiding expensive deep copies when the
-document is only being read.
+dictionary is only being read.
 
 ## Efficient Fork-and-Edit Patterns
 
