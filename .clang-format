@@ -1,7 +1,6 @@
 ---
 BasedOnStyle: Mozilla
 AlignOperands: false
-AllowShortFunctionsOnASingleLine: None
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 BinPackArguments: true

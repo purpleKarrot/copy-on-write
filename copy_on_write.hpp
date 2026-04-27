@@ -219,9 +219,9 @@ public:
     }
   }
 
-  copy_on_write(copy_on_write&& x) noexcept
-    : _alloc{x._alloc}
-    , _self{std::exchange(x._self, nullptr)}
+  copy_on_write(copy_on_write&& other) noexcept
+    : _alloc{other._alloc}
+    , _self{std::exchange(other._self, nullptr)}
   {
   }
 
@@ -246,10 +246,7 @@ public:
 
     if (x.valueless_after_move()) {
       _reset(nullptr);
-    } else if constexpr (pocca || alloc_traits::is_always_equal::value) {
-      x._self->count.fetch_add(1, std::memory_order_relaxed);
-      _reset(x._self);
-    } else if (_alloc == x._alloc) {
+    } else if (pocca || alloc_traits::is_always_equal::value || _alloc == x._alloc) {
       x._self->count.fetch_add(1, std::memory_order_relaxed);
       _reset(x._self);
     } else {
@@ -318,15 +315,9 @@ public:
     return std::pointer_traits<const_pointer>::pointer_to(_self->value);
   }
 
-  [[nodiscard]] auto valueless_after_move() const noexcept -> bool
-  {
-    return _self == nullptr;
-  }
+  [[nodiscard]] auto valueless_after_move() const noexcept -> bool { return _self == nullptr; }
 
-  [[nodiscard]] auto get_allocator() const noexcept -> allocator_type
-  {
-    return _alloc;
-  }
+  [[nodiscard]] auto get_allocator() const noexcept -> allocator_type { return _alloc; }
 
   [[nodiscard]] auto use_count() const noexcept -> long
   {

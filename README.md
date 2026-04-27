@@ -405,37 +405,40 @@ class copy_on_write {
 
   void swap(copy_on_write& other) noexcept(see below);
 
-  friend void swap(
-    copy_on_write& lhs,
-    copy_on_write& rhs) noexcept(noexcept(lhs.swap(rhs)));
-
-  template <class U, class AA>
-  friend bool operator==(
-    const copy_on_write& lhs,
-    const copy_on_write<U, AA>& rhs)
-    noexcept(see below);
-
-  template <class U>
-  friend bool operator==(
-    const copy_on_write& lhs,
-    const U& rhs) noexcept(see below);
-
-  template <class U, class AA>
-  friend auto operator<=>(
-    const copy_on_write& lhs,
-    const copy_on_write<U, AA>& rhs)
-    -> synth-three-way-result<T, U>;
-
-  template <class U>
-  friend auto operator<=>(
-    const copy_on_write& lhs,
-    const U& rhs)
-    -> synth-three-way-result<T, U>;
-
  private:
   Allocator alloc = Allocator();  // exposition only
   /* unspecified */ p;            // exposition only
 };
+
+
+template <class T1, class A1, class T2, class A2>
+bool operator==(
+  const copy_on_write<T1, A1>& lhs,
+  const copy_on_write<T2, A2>& rhs)
+  noexcept(see below);
+
+template <class T, class A, class U>
+bool operator==(
+  const copy_on_write<T, A>& lhs,
+  const U& rhs) noexcept(see below);
+
+template <class T1, class A1, class T2, class A2>
+auto operator<=>(
+  const copy_on_write<T1, A1>& lhs,
+  const copy_on_write<T2, A2>& rhs)
+  -> synth-three-way-result<T1, T2>;
+
+template <class T, class A, class U>
+auto operator<=>(
+  const copy_on_write<T, A>& lhs,
+  const U& rhs)
+  -> synth-three-way-result<T, U>;
+
+template <class T, class A>
+void swap(
+  copy_on_write<T, A>& lhs,
+  copy_on_write<T, A>& rhs)
+  noexcept(noexcept(lhs.swap(rhs)));
 
 template <class Value>
 copy_on_write(Value) -> copy_on_write<Value>;
@@ -582,7 +585,7 @@ copy_on_write(const copy_on_write& other);
 
 - _Mandates_: `is_copy_constructible_v<T>` is `true`.
 - _Effects_: `alloc` is direct-non-list-initialized with
-  `allocator_traits<Allocator>::   select_on_container_copy_construction(other.alloc)`.
+  `allocator_traits<Allocator>::select_on_container_copy_construction(other.alloc)`.
   If `other` is valueless, `*this` is valueless. Otherwise, if
   `alloc == other.alloc` is `true`, `*this` shares ownership of `other`'s owned
   object and the reference count is incremented. Otherwise, constructs an owned
@@ -620,7 +623,7 @@ copy_on_write& operator=(const copy_on_write& other);
   Otherwise:
 
   1. The allocator needs updating if
-     `allocator_traits<Allocator>::   propagate_on_container_copy_assignment::value`
+     `allocator_traits<Allocator>::propagate_on_container_copy_assignment::value`
      is `true`.
 
   2. If `other` is valueless, `*this` becomes valueless. The reference count of
@@ -802,19 +805,20 @@ void swap(copy_on_write& other)
 ```
 
 - _Preconditions_: If
-  `allocator_traits<Allocator>::   propagate_on_container_swap::value` is
-  `false`, then `get_allocator() == other.get_allocator()` is `true`.
+  `allocator_traits<Allocator>::propagate_on_container_swap::value` is `false`,
+   then `get_allocator() == other.get_allocator()` is `true`.
 - _Effects_: Exchanges the owned objects or valueless states of `*this` and
-  `other`. If
-  `allocator_traits<Allocator>::   propagate_on_container_swap::value` is
-  `true`, the allocators of `*this` and `other` are exchanged. Otherwise the
+  `other`. If `allocator_traits<Allocator>::propagate_on_container_swap::value`
+  is `true`, the allocators of `*this` and `other` are exchanged. Otherwise the
   allocators are not swapped. \[_Note_: Does not call `swap` on the owned
   objects directly. —_end note_\]
 
 ```cpp
-friend void swap(
-  copy_on_write& lhs,
-  copy_on_write& rhs) noexcept(noexcept(lhs.swap(rhs)));
+template <class T, class A>
+void swap(
+  copy_on_write<T, A>& lhs,
+  copy_on_write<T, A>& rhs)
+  noexcept(noexcept(lhs.swap(rhs)));
 ```
 
 - _Effects_: Equivalent to `lhs.swap(rhs)`.
