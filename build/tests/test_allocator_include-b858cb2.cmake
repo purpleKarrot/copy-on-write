@@ -1,5 +1,0 @@
-if(EXISTS "/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator_tests-b858cb2.cmake")
-  include("/home/runner/work/copy-on-write/copy-on-write/build/tests/test_allocator_tests-b858cb2.cmake")
-else()
-  add_test(test_allocator_NOT_BUILT-b858cb2 test_allocator_NOT_BUILT-b858cb2)
-endif()

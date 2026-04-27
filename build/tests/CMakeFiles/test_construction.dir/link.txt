@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/test_construction.dir/link.d CMakeFiles/test_construction.dir/test_construction.cpp.o -o test_construction

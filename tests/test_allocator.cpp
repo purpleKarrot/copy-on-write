@@ -1,5 +1,4 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
+#include <gtest/gtest.h>
 
 #include <copy_on_write.hpp>
 
@@ -109,18 +108,18 @@ struct pocs_allocator : tracking_allocator<T>
 // Basic allocation tracking
 // ---------------------------------------------------------------------------
 
-TEST_CASE("exactly one allocation per constructed object")
+TEST(Allocator, ExactlyOneAllocationPerConstructedObject)
 {
     int allocs = 0, deallocs = 0;
     tracking_allocator<int> ta(&allocs, &deallocs, 1);
     {
         xyz::copy_on_write<int, tracking_allocator<int>> x(std::allocator_arg, ta, 42);
-        CHECK(allocs == 1);
+        EXPECT_EQ(allocs, 1);
     }
-    CHECK(deallocs == 1);
+    EXPECT_EQ(deallocs, 1);
 }
 
-TEST_CASE("destructor deallocates when use_count drops to zero")
+TEST(Allocator, DestructorDeallocatesWhenUseCountDropsToZero)
 {
     int allocs = 0, deallocs = 0;
     tracking_allocator<int> ta(&allocs, &deallocs, 1);
@@ -128,29 +127,29 @@ TEST_CASE("destructor deallocates when use_count drops to zero")
         xyz::copy_on_write<int, tracking_allocator<int>> a(std::allocator_arg, ta, 1);
         {
             xyz::copy_on_write<int, tracking_allocator<int>> b(a);
-            CHECK(deallocs == 0);
+            EXPECT_EQ(deallocs, 0);
         }
-        CHECK(deallocs == 0); // a still alive
+        EXPECT_EQ(deallocs, 0); // a still alive
     }
-    CHECK(deallocs == 1); // now freed
+    EXPECT_EQ(deallocs, 1); // now freed
 }
 
 // ---------------------------------------------------------------------------
 // Copy with same vs. different allocator
 // ---------------------------------------------------------------------------
 
-TEST_CASE("copy with same allocator shares the model (no extra allocation)")
+TEST(Allocator, CopyWithSameAllocatorSharesModel)
 {
     int allocs = 0, deallocs = 0;
     tracking_allocator<int> ta(&allocs, &deallocs, 1);
     xyz::copy_on_write<int, tracking_allocator<int>> a(std::allocator_arg, ta, 5);
     int allocs_before = allocs;
     xyz::copy_on_write<int, tracking_allocator<int>> b(std::allocator_arg, ta, a);
-    CHECK(allocs == allocs_before); // no new allocation
-    CHECK(a.identical_to(b));
+    EXPECT_EQ(allocs, allocs_before); // no new allocation
+    EXPECT_TRUE(a.identical_to(b));
 }
 
-TEST_CASE("copy with different allocator allocates a new model")
+TEST(Allocator, CopyWithDifferentAllocatorAllocatesNewModel)
 {
     int allocs1 = 0, deallocs1 = 0;
     int allocs2 = 0, deallocs2 = 0;
@@ -160,16 +159,16 @@ TEST_CASE("copy with different allocator allocates a new model")
     xyz::copy_on_write<int, tracking_allocator<int>> a(std::allocator_arg, ta1, 5);
     xyz::copy_on_write<int, tracking_allocator<int>> b(std::allocator_arg, ta2, a);
 
-    CHECK(allocs2 == 1);
-    CHECK_FALSE(a.identical_to(b));
-    CHECK(*b == 5);
+    EXPECT_EQ(allocs2, 1);
+    EXPECT_FALSE(a.identical_to(b));
+    EXPECT_EQ(*b, 5);
 }
 
 // ---------------------------------------------------------------------------
 // POCCA
 // ---------------------------------------------------------------------------
 
-TEST_CASE("POCCA: allocator is propagated on copy assignment")
+TEST(Allocator, PoccaAllocatorIsPropagatedOnCopyAssignment)
 {
     int allocs1 = 0, deallocs1 = 0;
     int allocs2 = 0, deallocs2 = 0;
@@ -182,15 +181,15 @@ TEST_CASE("POCCA: allocator is propagated on copy assignment")
     b = a;
 
     // After copy assignment with POCCA, b should use a's allocator.
-    CHECK(b.get_allocator() == ta1);
-    CHECK(*b == 10);
+    EXPECT_EQ(b.get_allocator(), ta1);
+    EXPECT_EQ(*b, 10);
 }
 
 // ---------------------------------------------------------------------------
 // POCMA
 // ---------------------------------------------------------------------------
 
-TEST_CASE("POCMA: allocator is propagated on move assignment")
+TEST(Allocator, PocmaAllocatorIsPropagatedOnMoveAssignment)
 {
     int allocs1 = 0, deallocs1 = 0;
     int allocs2 = 0, deallocs2 = 0;
@@ -202,12 +201,12 @@ TEST_CASE("POCMA: allocator is propagated on move assignment")
 
     b = std::move(a);
 
-    CHECK(b.get_allocator() == ta1);
-    CHECK(*b == 10);
-    CHECK(a.valueless_after_move());
+    EXPECT_EQ(b.get_allocator(), ta1);
+    EXPECT_EQ(*b, 10);
+    EXPECT_TRUE(a.valueless_after_move());
 }
 
-TEST_CASE("without POCMA: move assignment with different allocators moves the value")
+TEST(Allocator, WithoutPocmaMoveAssignmentMovesValue)
 {
     int allocs1 = 0, deallocs1 = 0;
     int allocs2 = 0, deallocs2 = 0;
@@ -219,16 +218,16 @@ TEST_CASE("without POCMA: move assignment with different allocators moves the va
 
     b = std::move(a);
 
-    CHECK(*b == 55);
+    EXPECT_EQ(*b, 55);
     // b keeps its allocator (POCMA is false)
-    CHECK(b.get_allocator() == ta2);
+    EXPECT_EQ(b.get_allocator(), ta2);
 }
 
 // ---------------------------------------------------------------------------
 // POCS
 // ---------------------------------------------------------------------------
 
-TEST_CASE("POCS: allocators are swapped on member swap")
+TEST(Allocator, PocsAllocatorsAreSwappedOnMemberSwap)
 {
     int allocs1 = 0, deallocs1 = 0;
     int allocs2 = 0, deallocs2 = 0;
@@ -240,28 +239,28 @@ TEST_CASE("POCS: allocators are swapped on member swap")
 
     a.swap(b);
 
-    CHECK(*a == 222);
-    CHECK(*b == 111);
-    CHECK(a.get_allocator() == ta2);
-    CHECK(b.get_allocator() == ta1);
+    EXPECT_EQ(*a, 222);
+    EXPECT_EQ(*b, 111);
+    EXPECT_EQ(a.get_allocator(), ta2);
+    EXPECT_EQ(b.get_allocator(), ta1);
 }
 
 // ---------------------------------------------------------------------------
 // xyz::pmr::copy_on_write
 // ---------------------------------------------------------------------------
 
-TEST_CASE("pmr::copy_on_write works with monotonic_buffer_resource")
+TEST(Allocator, PmrCopyOnWriteWorksWithMonotonicBufferResource)
 {
     std::array<std::byte, 1024> buf;
     std::pmr::monotonic_buffer_resource pool(buf.data(), buf.size());
     std::pmr::polymorphic_allocator<int> pmr_alloc(&pool);
 
     xyz::pmr::copy_on_write<int> x(std::allocator_arg, pmr_alloc, 42);
-    CHECK(*x == 42);
-    CHECK_FALSE(x.valueless_after_move());
+    EXPECT_EQ(*x, 42);
+    EXPECT_FALSE(x.valueless_after_move());
 }
 
-TEST_CASE("pmr::copy_on_write copy shares the model")
+TEST(Allocator, PmrCopyOnWriteCopySharesModel)
 {
     std::array<std::byte, 1024> buf;
     std::pmr::monotonic_buffer_resource pool(buf.data(), buf.size());
@@ -270,6 +269,7 @@ TEST_CASE("pmr::copy_on_write copy shares the model")
     xyz::pmr::copy_on_write<int> a(std::allocator_arg, pmr_alloc, 7);
     xyz::pmr::copy_on_write<int> b(std::allocator_arg, pmr_alloc, a);
 
-    CHECK(a.identical_to(b));
-    CHECK(*b == 7);
+    EXPECT_TRUE(a.identical_to(b));
+    EXPECT_EQ(*b, 7);
 }
+

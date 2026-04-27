@@ -1,5 +1,4 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
+#include <gtest/gtest.h>
 
 #include <copy_on_write.hpp>
 
@@ -9,43 +8,43 @@
 // modify(action) — single-argument overload
 // ---------------------------------------------------------------------------
 
-TEST_CASE("modify(action) mutates value in-place when use_count == 1")
+TEST(Modifiers, ModifyActionMutatesInPlaceWhenUnshared)
 {
     xyz::copy_on_write<int> x(5);
     const int* ptr_before = &(*x);
     x.modify([](int& v) { v += 10; });
-    CHECK(*x == 15);
+    EXPECT_EQ(*x, 15);
     // No new allocation: the pointer to the value should be unchanged.
-    CHECK(&(*x) == ptr_before);
+    EXPECT_EQ(&(*x), ptr_before);
 }
 
-TEST_CASE("modify(action) deep-copies before mutating when use_count > 1")
+TEST(Modifiers, ModifyActionDeepCopiesBeforeMutatingWhenShared)
 {
     xyz::copy_on_write<int> a(5);
     xyz::copy_on_write<int> b(a);
-    REQUIRE(a.identical_to(b));
+    ASSERT_TRUE(a.identical_to(b));
 
     b.modify([](int& v) { v += 10; });
 
-    CHECK(*b == 15);
-    CHECK(*a == 5);          // original unaffected
-    CHECK_FALSE(a.identical_to(b));
+    EXPECT_EQ(*b, 15);
+    EXPECT_EQ(*a, 5);          // original unaffected
+    EXPECT_FALSE(a.identical_to(b));
 }
 
-TEST_CASE("modify(action) on shared object leaves original use_count at 1")
+TEST(Modifiers, ModifyActionOnSharedLeavesOriginalUseCountAtOne)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(a);
     b.modify([](int& v) { v = 99; });
-    CHECK(a.use_count() == 1);
-    CHECK(b.use_count() == 1);
+    EXPECT_EQ(a.use_count(), 1);
+    EXPECT_EQ(b.use_count(), 1);
 }
 
 // ---------------------------------------------------------------------------
 // modify(action, transform) — two-argument overload
 // ---------------------------------------------------------------------------
 
-TEST_CASE("modify(action,transform) calls action in-place when unshared")
+TEST(Modifiers, ModifyActionTransformCallsActionInPlaceWhenUnshared)
 {
     xyz::copy_on_write<std::string> x("hello");
     bool action_called = false;
@@ -56,12 +55,12 @@ TEST_CASE("modify(action,transform) calls action in-place when unshared")
         [&](std::string const& s) -> std::string { transform_called = true; return s + "!"; }
     );
 
-    CHECK(*x == "hello!");
-    CHECK(action_called);
-    CHECK_FALSE(transform_called);
+    EXPECT_EQ(*x, "hello!");
+    EXPECT_TRUE(action_called);
+    EXPECT_FALSE(transform_called);
 }
 
-TEST_CASE("modify(action,transform) calls transform when shared")
+TEST(Modifiers, ModifyActionTransformCallsTransformWhenShared)
 {
     xyz::copy_on_write<std::string> a("hello");
     xyz::copy_on_write<std::string> b(a);
@@ -73,74 +72,75 @@ TEST_CASE("modify(action,transform) calls transform when shared")
         [&](std::string const& s) -> std::string { transform_called = true; return s + "?"; }
     );
 
-    CHECK(*b == "hello?");
-    CHECK(*a == "hello");      // original unaffected
-    CHECK(transform_called);
-    CHECK_FALSE(action_called);
+    EXPECT_EQ(*b, "hello?");
+    EXPECT_EQ(*a, "hello");      // original unaffected
+    EXPECT_TRUE(transform_called);
+    EXPECT_FALSE(action_called);
 }
 
 // ---------------------------------------------------------------------------
 // modify(transform) — transformation-only overload
 // ---------------------------------------------------------------------------
 
-TEST_CASE("modify(transform) produces the correct result when unshared")
+TEST(Modifiers, ModifyTransformProducesCorrectResultWhenUnshared)
 {
     xyz::copy_on_write<int> x(3);
     x.modify([](int const& v) -> int { return v * 2; });
-    CHECK(*x == 6);
+    EXPECT_EQ(*x, 6);
 }
 
-TEST_CASE("modify(transform) produces the correct result when shared")
+TEST(Modifiers, ModifyTransformProducesCorrectResultWhenShared)
 {
     xyz::copy_on_write<int> a(3);
     xyz::copy_on_write<int> b(a);
     b.modify([](int const& v) -> int { return v * 2; });
-    CHECK(*b == 6);
-    CHECK(*a == 3);
+    EXPECT_EQ(*b, 6);
+    EXPECT_EQ(*a, 3);
 }
 
-TEST_CASE("modify(transform) breaks sharing when use_count > 1")
+TEST(Modifiers, ModifyTransformBreaksSharingWhenShared)
 {
     xyz::copy_on_write<int> a(3);
     xyz::copy_on_write<int> b(a);
-    REQUIRE(a.identical_to(b));
+    ASSERT_TRUE(a.identical_to(b));
     b.modify([](int const& v) -> int { return v * 2; });
-    CHECK_FALSE(a.identical_to(b));
+    EXPECT_FALSE(a.identical_to(b));
 }
 
 // ---------------------------------------------------------------------------
 // swap (member)
 // ---------------------------------------------------------------------------
 
-TEST_CASE("member swap exchanges values")
+TEST(Modifiers, MemberSwapExchangesValues)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(2);
     a.swap(b);
-    CHECK(*a == 2);
-    CHECK(*b == 1);
+    EXPECT_EQ(*a, 2);
+    EXPECT_EQ(*b, 1);
 }
 
-TEST_CASE("member swap with valueless object")
+TEST(Modifiers, MemberSwapWithValuelessObject)
 {
     xyz::copy_on_write<int> a(42);
     xyz::copy_on_write<int> b(std::move(a));
     // a is now valueless, b holds 42
     b.swap(a);
-    CHECK(*a == 42);
-    CHECK(b.valueless_after_move());
+    EXPECT_EQ(*a, 42);
+    EXPECT_TRUE(b.valueless_after_move());
 }
 
 // ---------------------------------------------------------------------------
 // swap (free function)
 // ---------------------------------------------------------------------------
 
-TEST_CASE("free swap delegates to member swap")
+TEST(Modifiers, FreeSwapDelegatesToMemberSwap)
 {
     xyz::copy_on_write<int> a(10);
     xyz::copy_on_write<int> b(20);
     using std::swap;
     swap(a, b);
-    CHECK(*a == 20);
-    CHECK(*b == 10);
+    EXPECT_EQ(*a, 20);
+    EXPECT_EQ(*b, 10);
 }
+

@@ -1,5 +1,4 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
+#include <gtest/gtest.h>
 
 #include <copy_on_write.hpp>
 
@@ -9,120 +8,121 @@
 // Copy assignment
 // ---------------------------------------------------------------------------
 
-TEST_CASE("copy assignment sets the value")
+TEST(Assignment, CopyAssignmentSetsValue)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(2);
     b = a;
-    CHECK(*b == 1);
+    EXPECT_EQ(*b, 1);
 }
 
-TEST_CASE("copy assignment shares ownership")
+TEST(Assignment, CopyAssignmentSharesOwnership)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(2);
     b = a;
-    CHECK(a.use_count() == 2);
-    CHECK(b.use_count() == 2);
-    CHECK(a.identical_to(b));
+    EXPECT_EQ(a.use_count(), 2);
+    EXPECT_EQ(b.use_count(), 2);
+    EXPECT_TRUE(a.identical_to(b));
 }
 
-TEST_CASE("copy self-assignment is a no-op")
+TEST(Assignment, CopySelfAssignmentIsNoOp)
 {
     xyz::copy_on_write<int> a(7);
     const int* ptr = &(*a);
     a = a; // NOLINT
-    CHECK(*a == 7);
-    CHECK(&(*a) == ptr);
-    CHECK(a.use_count() == 1);
+    EXPECT_EQ(*a, 7);
+    EXPECT_EQ(&(*a), ptr);
+    EXPECT_EQ(a.use_count(), 1);
 }
 
-TEST_CASE("copy assignment releases old value when it was the sole owner")
+TEST(Assignment, CopyAssignmentReleasesOldValue)
 {
     xyz::copy_on_write<int> a(99);
     xyz::copy_on_write<int> b(0);
     b = a;
     // b no longer solely owns its old model; a and b share a's model
-    CHECK(a.use_count() == 2);
+    EXPECT_EQ(a.use_count(), 2);
 }
 
-TEST_CASE("copy assignment from valueless object makes target valueless")
+TEST(Assignment, CopyAssignmentFromValuelessMakesTargetValueless)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(std::move(a)); // a is now valueless
     xyz::copy_on_write<int> c(5);
     c = a;
-    CHECK(c.valueless_after_move());
+    EXPECT_TRUE(c.valueless_after_move());
 }
 
 // ---------------------------------------------------------------------------
 // Move assignment
 // ---------------------------------------------------------------------------
 
-TEST_CASE("move assignment transfers value, source becomes valueless")
+TEST(Assignment, MoveAssignmentTransfersValue)
 {
     xyz::copy_on_write<int> a(10);
     xyz::copy_on_write<int> b(0);
     b = std::move(a);
-    CHECK(a.valueless_after_move());
-    CHECK(*b == 10);
+    EXPECT_TRUE(a.valueless_after_move());
+    EXPECT_EQ(*b, 10);
 }
 
-TEST_CASE("move self-assignment is a no-op")
+TEST(Assignment, MoveSelfAssignmentIsNoOp)
 {
     xyz::copy_on_write<int> a(3);
     // Suppress the self-move warning; the class must handle it gracefully.
     auto& ref = a;
     a = std::move(ref);
-    CHECK(*a == 3);
+    EXPECT_EQ(*a, 3);
 }
 
-TEST_CASE("move assignment use_count stays 1 on target")
+TEST(Assignment, MoveAssignmentUseCountStaysOneOnTarget)
 {
     xyz::copy_on_write<int> a(4);
     xyz::copy_on_write<int> b(0);
     b = std::move(a);
-    CHECK(b.use_count() == 1);
+    EXPECT_EQ(b.use_count(), 1);
 }
 
-TEST_CASE("move assignment from valueless object makes target valueless")
+TEST(Assignment, MoveAssignmentFromValuelessMakesTargetValueless)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(std::move(a)); // a valueless
     xyz::copy_on_write<int> c(5);
     c = std::move(a);
-    CHECK(c.valueless_after_move());
+    EXPECT_TRUE(c.valueless_after_move());
 }
 
 // ---------------------------------------------------------------------------
 // Value assignment (operator=(U&&))
 // ---------------------------------------------------------------------------
 
-TEST_CASE("value assignment updates in-place when use_count == 1")
+TEST(Assignment, ValueAssignmentUpdatesInPlaceWhenUnshared)
 {
     xyz::copy_on_write<int> x(1);
     const int* ptr = &(*x);
     x = 42;
-    CHECK(*x == 42);
+    EXPECT_EQ(*x, 42);
     // With use_count == 1 the implementation mutates in place
-    CHECK(&(*x) == ptr);
+    EXPECT_EQ(&(*x), ptr);
 }
 
-TEST_CASE("value assignment allocates a new model when shared")
+TEST(Assignment, ValueAssignmentAllocatesNewModelWhenShared)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(a);
     b = 42;
-    CHECK(*b == 42);
-    CHECK(*a == 1);
-    CHECK_FALSE(a.identical_to(b));
-    CHECK(a.use_count() == 1);
-    CHECK(b.use_count() == 1);
+    EXPECT_EQ(*b, 42);
+    EXPECT_EQ(*a, 1);
+    EXPECT_FALSE(a.identical_to(b));
+    EXPECT_EQ(a.use_count(), 1);
+    EXPECT_EQ(b.use_count(), 1);
 }
 
-TEST_CASE("value assignment with rvalue reference")
+TEST(Assignment, ValueAssignmentWithRvalueReference)
 {
     xyz::copy_on_write<std::string> x("old");
     x = std::string("new");
-    CHECK(*x == "new");
+    EXPECT_EQ(*x, "new");
 }
+

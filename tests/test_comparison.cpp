@@ -1,5 +1,4 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
+#include <gtest/gtest.h>
 
 #include <copy_on_write.hpp>
 
@@ -21,155 +20,156 @@ struct LessOnly
 // operator== between two copy_on_write
 // ---------------------------------------------------------------------------
 
-TEST_CASE("operator== returns true for equal values")
+TEST(Comparison, EqualityReturnsTrueForEqualValues)
 {
     xyz::copy_on_write<int> a(5), b(5);
-    CHECK(a == b);
+    EXPECT_TRUE(a == b);
 }
 
-TEST_CASE("operator== returns false for different values")
+TEST(Comparison, EqualityReturnsFalseForDifferentValues)
 {
     xyz::copy_on_write<int> a(5), b(6);
-    CHECK_FALSE(a == b);
+    EXPECT_FALSE(a == b);
 }
 
-TEST_CASE("operator== short-circuits via identical_to when sharing")
+TEST(Comparison, EqualityShortCircuitsViaIdenticalToWhenSharing)
 {
     xyz::copy_on_write<int> a(5);
     xyz::copy_on_write<int> b(a);
-    REQUIRE(a.identical_to(b));
-    CHECK(a == b);
+    ASSERT_TRUE(a.identical_to(b));
+    EXPECT_TRUE(a == b);
 }
 
-TEST_CASE("operator== both valueless are equal")
+TEST(Comparison, EqualityBothValuelessAreEqual)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(std::move(a)); // a is valueless
     xyz::copy_on_write<int> c(2);
     xyz::copy_on_write<int> d(std::move(c)); // c is valueless
-    CHECK(a == c); // both valueless
+    EXPECT_TRUE(a == c); // both valueless
 }
 
-TEST_CASE("operator== one valueless, one live is not equal")
+TEST(Comparison, EqualityOneValuelessOneLiveIsNotEqual)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(std::move(a));
     xyz::copy_on_write<int> c(1);
-    CHECK_FALSE(a == c);
-    CHECK_FALSE(c == a);
+    EXPECT_FALSE(a == c);
+    EXPECT_FALSE(c == a);
 }
 
 // ---------------------------------------------------------------------------
 // operator== between copy_on_write and raw value
 // ---------------------------------------------------------------------------
 
-TEST_CASE("operator== with raw value returns true when equal")
+TEST(Comparison, EqualityWithRawValueReturnsTrueWhenEqual)
 {
     xyz::copy_on_write<int> x(7);
-    CHECK(x == 7);
+    EXPECT_TRUE(x == 7);
 }
 
-TEST_CASE("operator== with raw value returns false when not equal")
+TEST(Comparison, EqualityWithRawValueReturnsFalseWhenNotEqual)
 {
     xyz::copy_on_write<int> x(7);
-    CHECK_FALSE(x == 8);
+    EXPECT_FALSE(x == 8);
 }
 
-TEST_CASE("operator== valueless with raw value returns false")
+TEST(Comparison, EqualityValuelessWithRawValueReturnsFalse)
 {
     xyz::copy_on_write<int> a(1);
     xyz::copy_on_write<int> b(std::move(a));
-    CHECK_FALSE(a == 1);
+    EXPECT_FALSE(a == 1);
 }
 
 // ---------------------------------------------------------------------------
 // operator<=> between two copy_on_write
 // ---------------------------------------------------------------------------
 
-TEST_CASE("operator<=> equal values yields equivalent")
+TEST(Comparison, SpaceshipEqualValuesYieldsEquivalent)
 {
     xyz::copy_on_write<int> a(3), b(3);
-    CHECK((a <=> b) == 0);
+    EXPECT_TRUE((a <=> b) == 0);
 }
 
-TEST_CASE("operator<=> less yields less")
+TEST(Comparison, SpaceshipLessYieldsLess)
 {
     xyz::copy_on_write<int> a(2), b(3);
-    CHECK((a <=> b) < 0);
+    EXPECT_TRUE((a <=> b) < 0);
 }
 
-TEST_CASE("operator<=> greater yields greater")
+TEST(Comparison, SpaceshipGreaterYieldsGreater)
 {
     xyz::copy_on_write<int> a(4), b(3);
-    CHECK((a <=> b) > 0);
+    EXPECT_TRUE((a <=> b) > 0);
 }
 
-TEST_CASE("operator<=> both valueless yields equal")
+TEST(Comparison, SpaceshipBothValuelessYieldsEqual)
 {
     xyz::copy_on_write<int> a(0);
     xyz::copy_on_write<int> b(std::move(a));
     xyz::copy_on_write<int> c(0);
     xyz::copy_on_write<int> d(std::move(c));
-    CHECK((a <=> c) == 0);
+    EXPECT_TRUE((a <=> c) == 0);
 }
 
-TEST_CASE("operator<=> valueless is less than live")
+TEST(Comparison, SpaceshipValuelessIsLessThanLive)
 {
     xyz::copy_on_write<int> a(0);
     xyz::copy_on_write<int> b(std::move(a)); // a is now valueless
     xyz::copy_on_write<int> c(0);
-    CHECK((a <=> c) < 0);
-    CHECK((c <=> a) > 0);
+    EXPECT_TRUE((a <=> c) < 0);
+    EXPECT_TRUE((c <=> a) > 0);
 }
 
-TEST_CASE("operator<=> short-circuits via identical_to to equal when sharing")
+TEST(Comparison, SpaceshipShortCircuitsViaIdenticalToWhenSharing)
 {
     xyz::copy_on_write<int> a(5);
     xyz::copy_on_write<int> b(a);
-    REQUIRE(a.identical_to(b));
-    CHECK((a <=> b) == 0);
+    ASSERT_TRUE(a.identical_to(b));
+    EXPECT_TRUE((a <=> b) == 0);
 }
 
 // ---------------------------------------------------------------------------
 // operator<=> between copy_on_write and raw value
 // ---------------------------------------------------------------------------
 
-TEST_CASE("operator<=> with raw value: equal")
+TEST(Comparison, SpaceshipWithRawValueEqual)
 {
     xyz::copy_on_write<int> x(3);
-    CHECK((x <=> 3) == 0);
+    EXPECT_TRUE((x <=> 3) == 0);
 }
 
-TEST_CASE("operator<=> with raw value: less")
+TEST(Comparison, SpaceshipWithRawValueLess)
 {
     xyz::copy_on_write<int> x(2);
-    CHECK((x <=> 3) < 0);
+    EXPECT_TRUE((x <=> 3) < 0);
 }
 
-TEST_CASE("operator<=> with raw value: greater")
+TEST(Comparison, SpaceshipWithRawValueGreater)
 {
     xyz::copy_on_write<int> x(4);
-    CHECK((x <=> 3) > 0);
+    EXPECT_TRUE((x <=> 3) > 0);
 }
 
-TEST_CASE("operator<=> valueless with raw value yields less")
+TEST(Comparison, SpaceshipValuelessWithRawValueYieldsLess)
 {
     xyz::copy_on_write<int> a(0);
     xyz::copy_on_write<int> b(std::move(a));
-    CHECK((a <=> 0) < 0);
+    EXPECT_TRUE((a <=> 0) < 0);
 }
 
 // ---------------------------------------------------------------------------
 // synth_three_way fallback for types with only operator<
 // ---------------------------------------------------------------------------
 
-TEST_CASE("comparison works for types that only provide operator<")
+TEST(Comparison, SynthThreeWayFallbackForLessOnlyTypes)
 {
     xyz::copy_on_write<LessOnly> a(LessOnly{1});
     xyz::copy_on_write<LessOnly> b(LessOnly{2});
     xyz::copy_on_write<LessOnly> c(LessOnly{1});
 
-    CHECK((a <=> b) < 0);
-    CHECK((b <=> a) > 0);
-    CHECK((a <=> c) == 0);
+    EXPECT_TRUE((a <=> b) < 0);
+    EXPECT_TRUE((b <=> a) > 0);
+    EXPECT_TRUE((a <=> c) == 0);
 }
+
