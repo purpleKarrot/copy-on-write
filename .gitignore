@@ -1,0 +1,7 @@
+build/
+.cache/
+*.user
+*.swp
+*.swo
+.DS_Store
+CMakeUserPresets.json
