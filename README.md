@@ -150,7 +150,7 @@ this is automatically satisfied.
 ## Modification Through `modify`
 
 Modification of the owned object is performed through the `modify` member
-function. Three overloads are provided:
+function. Two overloads are provided:
 
 **`modify(action)`** accepts a callable of the form `void(T&)`. If the reference
 count is one (exclusive ownership), the action is applied directly to the owned
@@ -169,12 +169,6 @@ action calls `insert` on the existing vector; the transformation constructs a
 new vector from scratch, placing the new element first and then appending the
 remaining elements. In the shared case this avoids the cost of first copying the
 full vector and then inserting.
-
-**`modify(transform)`** accepts a `T(T const&)` transformation. If the reference
-count is one, the result of the transformation is assigned back to the owned
-object, potentially reusing its storage. If the reference count exceeds one, a
-new owned object is constructed by calling the transformation on the current
-value.
 
 ## Identity Optimisation
 
@@ -399,9 +393,6 @@ class copy_on_write {
     // requires cow-action<F, T>
     //       && cow-transformation<G, T>
   void modify(F&& f, G&& g);
-
-  template <class F>  // requires cow-transformation<F, T>
-  void modify(F&& f);
 
   void swap(copy_on_write& other) noexcept(see below);
 
@@ -779,20 +770,6 @@ void modify(F&& f, G&& g);
   overload, the old owned object is not copied before the new one is created;
   `g` receives only a const reference. This allows callers to construct the new
   value more efficiently than copy-then-modify.
-
-```cpp
-template <class F>  // requires cow-transformation<F, T>
-void modify(F&& f);
-```
-
-- _Constraints_: _`cow-transformation<F, T>`_ is satisfied.
-- _Preconditions_: `*this` is not valueless.
-- _Effects_: If `use_count() == 1`, assigns
-  `std::forward<F>(f)(std::as_const(*this_value))` to the owned object, where
-  `this_value` is a pointer to the owned object. Otherwise, creates a new owned
-  object by calling `std::forward<F>(f)` with a const reference to the current
-  owned object (using the allocator `alloc`), decrements the reference count of
-  the previous owned object, and takes exclusive ownership of the new object.
 
 ### X.Y.8 Swap [cow.swap]
 

@@ -89,35 +89,6 @@ TEST(Modifiers, ModifyActionTransformCallsTransformWhenShared)
 }
 
 // ---------------------------------------------------------------------------
-// modify(transform) — transformation-only overload
-// ---------------------------------------------------------------------------
-
-TEST(Modifiers, ModifyTransformProducesCorrectResultWhenUnshared)
-{
-  xyz::copy_on_write<int> x(3);
-  x.modify([](int const& v) -> int { return v * 2; });
-  EXPECT_EQ(*x, 6);
-}
-
-TEST(Modifiers, ModifyTransformProducesCorrectResultWhenShared)
-{
-  xyz::copy_on_write<int> a(3);
-  xyz::copy_on_write<int> b(a);
-  b.modify([](int const& v) -> int { return v * 2; });
-  EXPECT_EQ(*b, 6);
-  EXPECT_EQ(*a, 3);
-}
-
-TEST(Modifiers, ModifyTransformBreaksSharingWhenShared)
-{
-  xyz::copy_on_write<int> a(3);
-  xyz::copy_on_write<int> b(a);
-  ASSERT_TRUE(a.identical_to(b));
-  b.modify([](int const& v) -> int { return v * 2; });
-  EXPECT_FALSE(a.identical_to(b));
-}
-
-// ---------------------------------------------------------------------------
 // swap (member)
 // ---------------------------------------------------------------------------
 

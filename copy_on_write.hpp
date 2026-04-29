@@ -27,9 +27,6 @@ template <typename F, typename T>
 concept transformation =
   std::invocable<F, T const&> && std::same_as<std::invoke_result_t<F, T const&>, T>;
 
-template <typename T>
-concept hashable = requires(T t) { std::hash<T>{}(t); };
-
 template <typename>
 inline constexpr bool is_copy_on_write_v = false;
 
@@ -357,19 +354,6 @@ public:
     }
   }
 
-  template <detail::transformation<T> Transform>
-  void modify(Transform&& transform)
-  {
-    if (use_count() > 1) {
-      auto* p =
-        _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
-      _self->count.fetch_sub(1, std::memory_order_release);
-      _self = p;
-    } else {
-      _self->value = std::forward<Transform>(transform)(std::as_const(_self->value));
-    }
-  }
-
   void swap(copy_on_write& other) noexcept(alloc_traits::propagate_on_container_swap::value ||
                                            alloc_traits::is_always_equal::value)
   {
@@ -501,7 +485,7 @@ using copy_on_write = xyz::copy_on_write<T, std::pmr::polymorphic_allocator<T>>;
 } // namespace xyz
 
 template <typename T, typename Allocator>
-  requires xyz::detail::hashable<T>
+  requires requires(T t) { std::hash<T>{}(t); }
 struct std::hash<xyz::copy_on_write<T, Allocator>>
 {
   constexpr std::size_t operator()(xyz::copy_on_write<T, Allocator> const& x) const
