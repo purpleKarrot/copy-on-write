@@ -127,6 +127,23 @@ Despite shared ownership of the underlying storage, `copy_on_write<T>` presents
 value semantics to its users: two `copy_on_write<T>` objects are equal when
 their owned objects are equal, and modifying one does not affect the other.
 
+## A new type rather than a composable wrapper
+
+If copy-on-write semantics could be imparted to another types using an adapter
+class template, we could use `copy_on-write_adapter<indirect<T>>` or
+`copy_on-write_adapter<polymorphic<T>>` to create copy-on-write types. This
+adapter class could be used similarly to container adapters such as `queue`,
+`stack` and `priority_queue`.
+
+Implementing copy-on-write behaviour requires intrusion into the details of
+object ownership and is not possible to implement for `indirect<T>` or
+`polymorphic<T>` without adding an additional layer of indirection or specifying
+partial template specialisations for every wrapped type.
+
+To support polymorphic copy-on-write behaviour, an additional class,
+`polymorphic_copy_on_write` would be required. We are not proposing addition of
+this class template in this proposal.
+
 ## Cheap Copies
 
 Copying a `copy_on_write<T>` increments the reference count and shares a pointer
