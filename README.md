@@ -166,6 +166,13 @@ When a `copy_on_write<T>` is accessed through a const access path, constness
 propagates to the owned object. Because all access is already const-qualified,
 this is automatically satisfied.
 
+We prefer to provide `operator*` and `operator->` rather than requiring const
+access to be handled with a `read` function. A `read` member function could take
+a callable that acts on a const reference to the owned object. Use of a `read`
+member function would compose poorly with generic code as it is specific to
+`copy_on_write` whereas `operator*` and `operator->` will work similarly to
+existing standard library types for non-mutating access.
+
 ## Modification Through `modify`
 
 Modification of the owned object is performed through the `modify` member
