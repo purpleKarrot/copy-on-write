@@ -2,13 +2,17 @@
 
 ISO/IEC JTC1 SC22 WG21 Programming Language C++
 
-DXXXXR0
+P4210R0
 
 Working Group: Library Evolution, Library
 
 Date: 2026-XX-XX
 
 _Daniel Pfeifer \<daniel@pfeifer-mail.de>_
+
+_Jonathan Coe \<jonathanbcoe@gmail.com>_
+
+_Antony Peacock \<ant.peacock@gmail.com>_
 
 # Abstract
 
