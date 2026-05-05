@@ -56,10 +56,10 @@ public:
 };
 ```
 
-Storing undo history as `std::vector<document>` requires a full deep copy of all
-lines on every recorded state. Using `std::shared_ptr` avoids copies but breaks
-value semantics: modifying a shared document through one observer would affect
-all observers.
+If `document` objects are copied frequently (passed by value, returned from
+functions, stored in containers) but modified rarely, eagerly copying all
+lines on every copy is unnecessarily expensive. Sharing the underlying storage
+(e.g. with `std::shared_ptr`) avoids copies but can compromise value semantics.
 
 `copy_on_write<T>` provides a middle ground. Multiple objects share the
 underlying data, paying only an atomic reference-count increment on copy. A copy
@@ -114,10 +114,9 @@ Without `copy_on_write`, the second line would require a full deep copy of
 
 ## Avoiding Redundant Work on Shared Data
 
-When two `copy_on_write<T>` objects share the same underlying data, they are
-provably equal. The `identical_to` member function and equality comparison
-short-circuit in this case, avoiding potentially expensive element-wise
-comparisons.
+When two `copy_on_write<T>` objects share the underlying data, they are
+provably equal. The equality comparison short-circuits in this case, avoiding
+potentially expensive element-wise comparisons.
 
 # Design Requirements
 
@@ -1000,11 +999,6 @@ https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p3019r14.html
 
 _stlab copy_on_write_ https://stlab.cc/libraries/copy_on_write.hpp/
 
-_MISRA Language Guidelines_ https://ldra.com/misra/
-
-_High Integrity C++_
-https://www.perforce.com/resources/qac/high-integrity-cpp-coding-standard
-
 # Appendix A: Before and After Examples
 
 We show how `copy_on_write` simplifies composite class design and reduces copy
@@ -1043,18 +1037,6 @@ public:
 
   const std::string& line(std::size_t i) const {
     return _lines[i];
-  }
-};
-
-// Storing undo history copies all lines on every edit.
-class editor {
-  std::vector<document> _history;
-  std::size_t _current = 0;
-public:
-  void record() {
-    // Deep copy of entire document.
-    _history.push_back(_history[_current]);
-    ++_current;
   }
 };
 ```
@@ -1125,26 +1107,13 @@ public:
     return _lines.identical_to(other._lines);
   }
 };
-
-// Storing undo history is now O(1) per entry.
-class editor {
-  std::vector<document> _history;
-  std::size_t _current = 0;
-public:
-  void record() {
-    // O(1) copy: reference count increment only.
-    _history.push_back(_history[_current]);
-    ++_current;
-  }
-};
 ```
 
 The `insert` and `erase` operations demonstrate the two-argument `modify`
 overload: when the document's lines are exclusively owned, the in-place
-algorithm is used; when the lines are shared (e.g., between two undo states),
-the constructive algorithm builds a new vector from scratch, avoiding a
-redundant copy followed by a mutation.
+action is used; when the lines are shared, the constructive transform builds a
+new vector from scratch, avoiding a redundant copy followed by a mutation.
 
-The `shares_data_with` method demonstrates `identical_to`. Two undo states that
+The `shares_data_with` method demonstrates `identical_to`. Two documents that
 have not yet diverged will return `true`, allowing an editor to skip redundant
 display refreshes or diffs.
