@@ -13,6 +13,13 @@
 #include <type_traits>
 #include <utility>
 
+#if (__cplusplus > 202302L || (defined(_MSVC_LANG) && _MSVC_LANG > 202302L)) &&                    \
+  defined(__cpp_lib_constexpr_atomic) && __cpp_lib_constexpr_atomic >= 202411L
+#  define XYZ_CONSTEXPR_26 constexpr
+#else
+#  define XYZ_CONSTEXPR_26
+#endif
+
 namespace xyz {
 
 template <typename T, typename Allocator = std::allocator<T>>
@@ -102,7 +109,7 @@ public:
   // Member functions
   //
 
-  explicit copy_on_write()
+  XYZ_CONSTEXPR_26 explicit copy_on_write()
     requires std::default_initializable<Allocator>
     : _alloc{}
     , _self{_make_model(_alloc)}
@@ -114,7 +121,7 @@ public:
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
              !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
              std::constructible_from<T, U> && std::default_initializable<Allocator>)
-  explicit copy_on_write(U&& x)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(U&& x)
     : _alloc{}
     , _self{_make_model(_alloc, std::forward<U>(x))}
   {
@@ -122,7 +129,7 @@ public:
 
   template <typename... Us>
     requires(std::constructible_from<T, Us...> && std::default_initializable<Allocator>)
-  explicit copy_on_write(std::in_place_t, Us&&... us)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(std::in_place_t, Us&&... us)
     : _alloc{}
     , _self{_make_model(_alloc, std::forward<Us>(us)...)}
   {
@@ -131,13 +138,14 @@ public:
   template <typename I, typename... Us>
     requires(std::constructible_from<T, std::initializer_list<I>&, Us...> &&
              std::default_initializable<Allocator>)
-  explicit copy_on_write(std::in_place_t, std::initializer_list<I> ilist, Us&&... us)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(std::in_place_t, std::initializer_list<I> ilist,
+                                          Us&&... us)
     : _alloc{}
     , _self{_make_model(_alloc, ilist, std::forward<Us>(us)...)}
   {
   }
 
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a)
     : _alloc{a}
     , _self{_make_model(_alloc)}
   {
@@ -148,7 +156,7 @@ public:
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
              !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
              std::constructible_from<T, U>)
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a, U&& u)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, U&& u)
     : _alloc{a}
     , _self{_make_model(_alloc, std::forward<U>(u))}
   {
@@ -156,7 +164,8 @@ public:
 
   template <typename... Us>
     requires std::constructible_from<T, Us...>
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t, Us&&... us)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
+                                          Us&&... us)
     : _alloc{a}
     , _self{_make_model(_alloc, std::forward<Us>(us)...)}
   {
@@ -164,15 +173,16 @@ public:
 
   template <typename I, typename... Us>
     requires std::constructible_from<T, std::initializer_list<I>&, Us...>
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
-                         std::initializer_list<I> ilist, Us&&... us)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
+                                          std::initializer_list<I> ilist, Us&&... us)
     : _alloc{a}
     , _self{_make_model(_alloc, ilist, std::forward<Us>(us)...)}
   {
   }
 
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a,
-                         copy_on_write const& other) noexcept(alloc_traits::is_always_equal::value)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(
+    std::allocator_arg_t, Allocator const& a,
+    copy_on_write const& other) noexcept(alloc_traits::is_always_equal::value)
     : _alloc{a}
     , _self{nullptr}
   {
@@ -190,8 +200,9 @@ public:
     }
   }
 
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a,
-                         copy_on_write&& other) noexcept(alloc_traits::is_always_equal::value)
+  XYZ_CONSTEXPR_26 explicit copy_on_write(
+    std::allocator_arg_t, Allocator const& a,
+    copy_on_write&& other) noexcept(alloc_traits::is_always_equal::value)
     : _alloc{a}
     , _self{nullptr}
   {
@@ -207,8 +218,8 @@ public:
     }
   }
 
-  copy_on_write(copy_on_write const& x) noexcept(alloc_traits::is_always_equal::value &&
-                                                 detail::nothrow_allocator_selection<Allocator>)
+  XYZ_CONSTEXPR_26 copy_on_write(copy_on_write const& x) noexcept(
+    alloc_traits::is_always_equal::value && detail::nothrow_allocator_selection<Allocator>)
     : _alloc{alloc_traits::select_on_container_copy_construction(x._alloc)}
     , _self{nullptr}
   {
@@ -226,22 +237,22 @@ public:
     }
   }
 
-  copy_on_write(copy_on_write&& other) noexcept
+  XYZ_CONSTEXPR_26 copy_on_write(copy_on_write&& other) noexcept
     : _alloc{other._alloc}
     , _self{std::exchange(other._self, nullptr)}
   {
   }
 
-  ~copy_on_write()
+  XYZ_CONSTEXPR_26 ~copy_on_write()
   {
-    assert(valueless_after_move() || _self->count > 0);
+    assert(valueless_after_move() || _self->count.load(std::memory_order_relaxed) > 0);
     if (_self != nullptr && _self->count.fetch_sub(1, std::memory_order_release) == 1) {
       std::atomic_thread_fence(std::memory_order_acquire);
       _destroy_model(_alloc, _self);
     }
   }
 
-  auto operator=(copy_on_write const& x) noexcept(
+  XYZ_CONSTEXPR_26 auto operator=(copy_on_write const& x) noexcept(
     alloc_traits::propagate_on_container_copy_assignment::value ||
     alloc_traits::is_always_equal::value) -> copy_on_write&
   {
@@ -269,7 +280,7 @@ public:
     return *this;
   }
 
-  auto operator=(copy_on_write&& x) noexcept(
+  XYZ_CONSTEXPR_26 auto operator=(copy_on_write&& x) noexcept(
     alloc_traits::propagate_on_container_move_assignment::value ||
     alloc_traits::is_always_equal::value) -> copy_on_write&
   {
@@ -298,7 +309,7 @@ public:
   template <typename U = T>
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
              std::constructible_from<T, U> && std::assignable_from<T&, U>)
-  auto operator=(U&& x) -> copy_on_write&
+  XYZ_CONSTEXPR_26 auto operator=(U&& x) -> copy_on_write&
   {
     if (_self != nullptr && use_count() == 1) {
       _self->value = std::forward<U>(x);
@@ -312,29 +323,35 @@ public:
   // Observers
   //
 
-  auto operator*() const noexcept -> value_type const&
+  XYZ_CONSTEXPR_26 auto operator*() const noexcept -> value_type const&
   {
     assert(!valueless_after_move());
     return _self->value;
   }
 
-  auto operator->() const noexcept -> const_pointer
+  XYZ_CONSTEXPR_26 auto operator->() const noexcept -> const_pointer
   {
     assert(!valueless_after_move());
     return std::pointer_traits<const_pointer>::pointer_to(_self->value);
   }
 
-  [[nodiscard]] auto valueless_after_move() const noexcept -> bool { return _self == nullptr; }
+  [[nodiscard]] XYZ_CONSTEXPR_26 auto valueless_after_move() const noexcept -> bool
+  {
+    return _self == nullptr;
+  }
 
-  [[nodiscard]] auto get_allocator() const noexcept -> allocator_type { return _alloc; }
+  [[nodiscard]] XYZ_CONSTEXPR_26 auto get_allocator() const noexcept -> allocator_type
+  {
+    return _alloc;
+  }
 
-  [[nodiscard]] auto use_count() const noexcept -> long
+  [[nodiscard]] XYZ_CONSTEXPR_26 auto use_count() const noexcept -> long
   {
     assert(!valueless_after_move());
     return _self->count.load(std::memory_order_acquire);
   }
 
-  [[nodiscard]] auto identical_to(copy_on_write const& x) const noexcept -> bool
+  [[nodiscard]] XYZ_CONSTEXPR_26 auto identical_to(copy_on_write const& x) const noexcept -> bool
   {
     assert(!valueless_after_move() && !x.valueless_after_move());
     return _self == x._self;
@@ -345,7 +362,7 @@ public:
   //
 
   template <detail::action<T> Action>
-  void modify(Action&& action)
+  XYZ_CONSTEXPR_26 void modify(Action&& action)
   {
     if (use_count() > 1) {
       _reset(_make_model(_alloc, std::as_const(_self->value)));
@@ -355,7 +372,7 @@ public:
   }
 
   template <detail::action<T> Action, detail::transformation<T> Transform>
-  void modify(Action&& action, Transform&& transform)
+  XYZ_CONSTEXPR_26 void modify(Action&& action, Transform&& transform)
   {
     if (use_count() > 1) {
       _reset(_make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value))));
@@ -364,8 +381,8 @@ public:
     }
   }
 
-  void swap(copy_on_write& other) noexcept(alloc_traits::propagate_on_container_swap::value ||
-                                           alloc_traits::is_always_equal::value)
+  XYZ_CONSTEXPR_26 void swap(copy_on_write& other) noexcept(
+    alloc_traits::propagate_on_container_swap::value || alloc_traits::is_always_equal::value)
   {
     assert(alloc_traits::propagate_on_container_swap::value || _alloc == other._alloc);
 
@@ -380,35 +397,44 @@ public:
 private:
   struct model
   {
-    std::atomic<long> count;
-    value_type value;
+    std::atomic<long> count{1};
+    union
+    {
+      value_type value;
+    };
+
+    XYZ_CONSTEXPR_26 model() noexcept {}
+    // The payload is constructed and destroyed separately through its allocator.
+    XYZ_CONSTEXPR_26 ~model() {}
   };
 
   using model_alloc_t = typename alloc_traits::template rebind_alloc<model>;
 
   template <typename... Args>
-  static auto _make_model(Allocator& a, Args&&... args)
+  XYZ_CONSTEXPR_26 static auto _make_model(Allocator& a, Args&&... args)
   {
     auto ma = model_alloc_t{a};
     auto p = std::allocator_traits<model_alloc_t>::allocate(ma, 1);
-    ::new (std::addressof(p->count)) std::atomic<long>{1};
+    std::construct_at(std::to_address(p));
     try {
       alloc_traits::construct(a, std::addressof(p->value), std::forward<Args>(args)...);
     } catch (...) {
+      std::destroy_at(std::to_address(p));
       std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);
       throw;
     }
     return p;
   }
 
-  static void _destroy_model(Allocator& a, model* p)
+  XYZ_CONSTEXPR_26 static void _destroy_model(Allocator& a, model* p)
   {
     auto ma = model_alloc_t{a};
     alloc_traits::destroy(a, std::addressof(p->value));
+    std::destroy_at(p);
     std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);
   }
 
-  void _reset(model* v)
+  XYZ_CONSTEXPR_26 void _reset(model* v)
   {
     if (_self != nullptr && _self->count.fetch_sub(1, std::memory_order_release) == 1) {
       std::atomic_thread_fence(std::memory_order_acquire);
@@ -422,8 +448,9 @@ private:
 };
 
 template <typename T1, typename A1, typename T2, typename A2>
-auto operator==(copy_on_write<T1, A1> const& x,
-                copy_on_write<T2, A2> const& y) noexcept(noexcept(*x == *y)) -> bool
+XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T1, A1> const& x,
+                                 copy_on_write<T2, A2> const& y) noexcept(noexcept(*x == *y))
+  -> bool
 {
   if (x.valueless_after_move() || y.valueless_after_move()) {
     return x.valueless_after_move() == y.valueless_after_move();
@@ -434,13 +461,14 @@ auto operator==(copy_on_write<T1, A1> const& x,
 
 template <typename T, typename A, typename U>
   requires(!detail::is_copy_on_write_v<U>)
-auto operator==(copy_on_write<T, A> const& x, U const& y) noexcept(noexcept(*x == y)) -> bool
+XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T, A> const& x,
+                                 U const& y) noexcept(noexcept(*x == y)) -> bool
 {
   return !x.valueless_after_move() && (*x == y);
 }
 
 template <typename T1, typename A1, typename T2, typename A2>
-auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
+XYZ_CONSTEXPR_26 auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
   -> detail::synth_three_way_result<T1, T2>
 {
   if (x.valueless_after_move() || y.valueless_after_move()) {
@@ -452,7 +480,8 @@ auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
 
 template <typename T, typename A, typename U>
   requires(!detail::is_copy_on_write_v<U>)
-auto operator<=>(copy_on_write<T, A> const& x, U const& y) -> detail::synth_three_way_result<T, U>
+XYZ_CONSTEXPR_26 auto operator<=>(copy_on_write<T, A> const& x, U const& y)
+  -> detail::synth_three_way_result<T, U>
 {
   if (x.valueless_after_move()) {
     return std::strong_ordering::less;
@@ -462,7 +491,8 @@ auto operator<=>(copy_on_write<T, A> const& x, U const& y) -> detail::synth_thre
 }
 
 template <typename T, typename A>
-void swap(copy_on_write<T, A>& x, copy_on_write<T, A>& y) noexcept(noexcept(x.swap(y)))
+XYZ_CONSTEXPR_26 void swap(copy_on_write<T, A>& x,
+                           copy_on_write<T, A>& y) noexcept(noexcept(x.swap(y)))
 {
   x.swap(y);
 }
@@ -496,5 +526,7 @@ struct std::hash<xyz::copy_on_write<T, Allocator>>
     return std::hash<T>{}(*x);
   }
 };
+
+#undef XYZ_CONSTEXPR_26
 
 #endif

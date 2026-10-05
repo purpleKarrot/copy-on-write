@@ -12,6 +12,7 @@ add_executable(cow_tests
   composition.cpp
   composition_impl.cpp
   construction.cpp
+  constexpr.cpp
   hash.cpp
   modifiers.cpp
   observers.cpp
