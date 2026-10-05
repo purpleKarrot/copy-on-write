@@ -20,6 +20,17 @@ class copy_on_write;
 
 namespace detail {
 
+template <typename Allocator>
+inline constexpr bool nothrow_allocator_selection = [] {
+  if constexpr (requires(Allocator const& a) { a.select_on_container_copy_construction(); }) {
+    return noexcept(std::declval<Allocator const&>().select_on_container_copy_construction());
+  } else {
+    // The allocator requirements guarantee that copying an allocator does not
+    // throw.
+    return true;
+  }
+}();
+
 template <typename F, typename T>
 concept action = std::invocable<F, T&> && std::same_as<std::invoke_result_t<F, T&>, void>;
 
@@ -160,7 +171,8 @@ public:
   {
   }
 
-  explicit copy_on_write(std::allocator_arg_t, Allocator const& a, copy_on_write const& other)
+  explicit copy_on_write(std::allocator_arg_t, Allocator const& a,
+                         copy_on_write const& other) noexcept(alloc_traits::is_always_equal::value)
     : _alloc{a}
     , _self{nullptr}
   {
@@ -195,7 +207,8 @@ public:
     }
   }
 
-  copy_on_write(copy_on_write const& x)
+  copy_on_write(copy_on_write const& x) noexcept(alloc_traits::is_always_equal::value &&
+                                                 detail::nothrow_allocator_selection<Allocator>)
     : _alloc{alloc_traits::select_on_container_copy_construction(x._alloc)}
     , _self{nullptr}
   {
@@ -228,7 +241,9 @@ public:
     }
   }
 
-  auto operator=(copy_on_write const& x) -> copy_on_write&
+  auto operator=(copy_on_write const& x) noexcept(
+    alloc_traits::propagate_on_container_copy_assignment::value ||
+    alloc_traits::is_always_equal::value) -> copy_on_write&
   {
     static_assert(std::is_copy_constructible_v<T>);
 

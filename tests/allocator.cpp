@@ -154,6 +154,63 @@ struct soccc_allocator : tracking_allocator<T>
   }
 };
 
+template <typename T, bool NothrowSelection>
+struct selection_allocator : tracking_allocator<T>
+{
+  using is_always_equal = std::true_type;
+  bool throw_on_selection = false;
+
+  template <typename U>
+  struct rebind
+  {
+    using other = selection_allocator<U, NothrowSelection>;
+  };
+
+  using tracking_allocator<T>::tracking_allocator;
+
+  template <typename U>
+  selection_allocator(selection_allocator<U, NothrowSelection> const& other) noexcept
+    : tracking_allocator<T>(other)
+    , throw_on_selection(other.throw_on_selection)
+  {
+  }
+
+  selection_allocator select_on_container_copy_construction() const noexcept(NothrowSelection)
+  {
+    if constexpr (!NothrowSelection) {
+      if (throw_on_selection) {
+        throw std::runtime_error("allocator selection failed");
+      }
+    }
+    return *this;
+  }
+
+  bool operator==(selection_allocator const&) const noexcept { return true; }
+};
+
+static_assert(std::is_nothrow_copy_constructible_v<xyz::copy_on_write<int>>);
+static_assert(std::is_nothrow_copy_assignable_v<xyz::copy_on_write<int>>);
+static_assert(
+  std::is_nothrow_constructible_v<xyz::copy_on_write<int>, std::allocator_arg_t,
+                                  std::allocator<int> const&, xyz::copy_on_write<int> const&>);
+static_assert(!std::is_nothrow_copy_constructible_v<xyz::pmr::copy_on_write<int>>);
+static_assert(!std::is_nothrow_copy_assignable_v<xyz::pmr::copy_on_write<int>>);
+static_assert(!std::is_nothrow_constructible_v<xyz::pmr::copy_on_write<int>, std::allocator_arg_t,
+                                               std::pmr::polymorphic_allocator<int> const&,
+                                               xyz::pmr::copy_on_write<int> const&>);
+static_assert(
+  !std::is_nothrow_copy_constructible_v<xyz::copy_on_write<int, tracking_allocator<int>>>);
+static_assert(!std::is_nothrow_copy_assignable_v<xyz::copy_on_write<int, tracking_allocator<int>>>);
+static_assert(!std::is_nothrow_copy_constructible_v<xyz::copy_on_write<int, pocca_allocator<int>>>);
+static_assert(std::is_nothrow_copy_assignable_v<xyz::copy_on_write<int, pocca_allocator<int>>>);
+static_assert(!std::is_nothrow_copy_constructible_v<xyz::copy_on_write<int, soccc_allocator<int>>>);
+static_assert(
+  std::is_nothrow_copy_constructible_v<xyz::copy_on_write<int, selection_allocator<int, true>>>);
+static_assert(
+  !std::is_nothrow_copy_constructible_v<xyz::copy_on_write<int, selection_allocator<int, false>>>);
+static_assert(
+  std::is_nothrow_copy_assignable_v<xyz::copy_on_write<int, selection_allocator<int, false>>>);
+
 struct move_observer
 {
   std::string value;
@@ -194,6 +251,79 @@ struct move_observer
 using observed_cow = xyz::copy_on_write<move_observer, tracking_allocator<move_observer>>;
 
 } // namespace
+
+TEST(Allocator, ThrowingSelectionPropagatesEvenWhenAllocatorsAreAlwaysEqual)
+{
+  for (bool valueless : {false, true}) {
+    SCOPED_TRACE(valueless ? "valueless" : "live");
+    using allocator = selection_allocator<int, false>;
+    using cow = xyz::copy_on_write<int, allocator>;
+    int allocs = 0, deallocs = 0;
+    allocator a(&allocs, &deallocs, 1);
+    a.throw_on_selection = true;
+    {
+      cow source(std::allocator_arg, a, 42);
+      std::optional<cow> holder;
+      if (valueless) {
+        holder.emplace(std::move(source));
+      }
+      EXPECT_THROW((cow(source)), std::runtime_error);
+      EXPECT_EQ(source.valueless_after_move(), valueless);
+      EXPECT_EQ(valueless ? holder->use_count() : source.use_count(), 1);
+      EXPECT_EQ(valueless ? **holder : *source, 42);
+    }
+    EXPECT_EQ(allocs, deallocs);
+  }
+}
+
+TEST(Allocator, CopyAssignmentDoesNotSelectAllocator)
+{
+  using allocator = selection_allocator<int, false>;
+  using cow = xyz::copy_on_write<int, allocator>;
+  allocator a;
+  a.throw_on_selection = true;
+  cow source(std::allocator_arg, a, 42);
+  cow target(std::allocator_arg, a, 0);
+  target = source;
+  EXPECT_TRUE(source.identical_to(target));
+  EXPECT_EQ(*target, 42);
+}
+
+TEST(Allocator, DefaultAllocatorCopyDoesNotCopyThrowingPayload)
+{
+  struct ThrowOnCopy
+  {
+    ThrowOnCopy() = default;
+    ThrowOnCopy(ThrowOnCopy const&) { throw std::runtime_error("payload copied"); }
+  };
+  using cow = xyz::copy_on_write<ThrowOnCopy>;
+  static_assert(std::is_nothrow_copy_constructible_v<cow>);
+  static_assert(std::is_nothrow_copy_assignable_v<cow>);
+  cow source;
+  cow copied(source);
+  cow assigned;
+  assigned = source;
+  EXPECT_TRUE(source.identical_to(copied));
+  EXPECT_TRUE(source.identical_to(assigned));
+  EXPECT_EQ(source.use_count(), 3);
+}
+
+TEST(Allocator, CopyAssignmentWithIncompatibleAllocatorPropagatesPayloadException)
+{
+  int allocs = 0, deallocs = 0, copies = 0, moves = 0;
+  tracking_allocator<move_observer> a(&allocs, &deallocs, 1), b(&allocs, &deallocs, 2);
+  {
+    observed_cow source(std::allocator_arg, a, std::in_place, "original", copies, moves, true);
+    observed_cow target(std::allocator_arg, b, std::in_place, "destination", copies, moves);
+    EXPECT_THROW(target = source, std::runtime_error);
+    EXPECT_EQ(source->value, "original");
+    EXPECT_EQ(target->value, "destination");
+    EXPECT_EQ(target.get_allocator(), b);
+    EXPECT_EQ(source.use_count(), 1);
+    EXPECT_EQ(target.use_count(), 1);
+  }
+  EXPECT_EQ(allocs, deallocs);
+}
 
 TEST(Allocator, UnequalAllocatorMovePreservesSharedPayload)
 {
