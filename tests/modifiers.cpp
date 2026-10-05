@@ -3,7 +3,85 @@
 #include <copy_on_write.hpp>
 #include <gtest/gtest.h>
 
+#include <atomic>
+#include <functional>
+#include <latch>
+#include <optional>
 #include <string>
+#include <thread>
+#include <utility>
+
+namespace {
+
+struct tracked_payload
+{
+  std::atomic<int>* live;
+  std::function<void()> on_copy;
+
+  explicit tracked_payload(std::atomic<int>& count, std::function<void()> hook = {})
+    : live{&count}
+    , on_copy{std::move(hook)}
+  {
+    ++*live;
+  }
+
+  tracked_payload(tracked_payload const& other)
+    : live{other.live}
+    , on_copy{other.on_copy}
+  {
+    ++*live;
+    if (on_copy) {
+      on_copy();
+    }
+  }
+
+  tracked_payload(tracked_payload&& other) noexcept
+    : live{other.live}
+    , on_copy{std::move(other.on_copy)}
+  {
+    ++*live;
+  }
+
+  ~tracked_payload() { --*live; }
+};
+
+} // namespace
+
+TEST(Modifiers, DetachDestroysPayloadWhenOtherOwnerIsReleasedDuringConstruction)
+{
+  for (bool transform : {false, true}) {
+    SCOPED_TRACE(transform ? "transform" : "action");
+    std::atomic<int> live = 0;
+    std::latch constructing{1}, owner_released{1};
+    auto release_other_owner = [&] {
+      constructing.count_down();
+      owner_released.wait();
+    };
+    {
+      xyz::copy_on_write<tracked_payload> value(std::in_place, live, release_other_owner);
+      std::optional<xyz::copy_on_write<tracked_payload>> other(value);
+      std::thread worker([&] {
+        constructing.wait();
+        other.reset();
+        owner_released.count_down();
+      });
+
+      if (transform) {
+        value.modify([](tracked_payload&) {},
+                     [&](tracked_payload const&) {
+                       release_other_owner();
+                       return tracked_payload(live);
+                     });
+      } else {
+        value.modify([](tracked_payload&) {});
+      }
+      worker.join();
+      EXPECT_EQ(value.use_count(), 1);
+      EXPECT_EQ(live.load(), 1);
+    }
+    EXPECT_EQ(live.load(), 0);
+  }
+}
 
 // ---------------------------------------------------------------------------
 // modify(action) — single-argument overload

@@ -269,7 +269,7 @@ public:
     } else if (pocma || _alloc == x._alloc) {
       _reset(std::exchange(x._self, nullptr));
     } else {
-      _reset(_make_model(_alloc, std::move(x._self->value)));
+      _reset(_make_model(_alloc, *x));
       x._reset(nullptr);
     }
 
@@ -333,9 +333,7 @@ public:
   void modify(Action&& action)
   {
     if (use_count() > 1) {
-      auto* p = _make_model(_alloc, std::as_const(_self->value));
-      _self->count.fetch_sub(1, std::memory_order_release);
-      _self = p;
+      _reset(_make_model(_alloc, std::as_const(_self->value)));
     }
 
     std::forward<Action>(action)(_self->value);
@@ -345,10 +343,7 @@ public:
   void modify(Action&& action, Transform&& transform)
   {
     if (use_count() > 1) {
-      auto* p =
-        _make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value)));
-      _self->count.fetch_sub(1, std::memory_order_release);
-      _self = p;
+      _reset(_make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value))));
     } else {
       std::forward<Action>(action)(_self->value);
     }

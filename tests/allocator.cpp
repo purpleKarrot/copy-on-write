@@ -5,8 +5,10 @@
 
 #include <memory>
 #include <memory_resource>
+#include <optional>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace {
 
@@ -32,17 +34,17 @@ struct tracking_allocator
   tracking_allocator() = default;
 
   tracking_allocator(int* ac, int* dc, int id_)
-    : alloc_count(ac)
-    , dealloc_count(dc)
-    , id(id_)
+    : alloc_count{ac}
+    , dealloc_count{dc}
+    , id{id_}
   {
   }
 
   template <typename U>
   tracking_allocator(tracking_allocator<U> const& o) noexcept
-    : alloc_count(o.alloc_count)
-    , dealloc_count(o.dealloc_count)
-    , id(o.id)
+    : alloc_count{o.alloc_count}
+    , dealloc_count{o.dealloc_count}
+    , id{o.id}
   {
   }
 
@@ -152,7 +154,126 @@ struct soccc_allocator : tracking_allocator<T>
   }
 };
 
+struct move_observer
+{
+  std::string value;
+  int* copies;
+  int* moves;
+  bool throw_on_copy;
+
+  move_observer(std::string v, int& c, int& m, bool throws = false)
+    : value{std::move(v)}
+    , copies{&c}
+    , moves{&m}
+    , throw_on_copy{throws}
+  {
+  }
+
+  move_observer(move_observer const& other)
+    : value{other.value}
+    , copies{other.copies}
+    , moves{other.moves}
+    , throw_on_copy{other.throw_on_copy}
+  {
+    ++*copies;
+    if (throw_on_copy) {
+      throw std::runtime_error("copy failed");
+    }
+  }
+
+  move_observer(move_observer&& other) noexcept
+    : value{std::exchange(other.value, "")}
+    , copies{other.copies}
+    , moves{other.moves}
+    , throw_on_copy{other.throw_on_copy}
+  {
+    ++*moves;
+  }
+};
+
+using observed_cow = xyz::copy_on_write<move_observer, tracking_allocator<move_observer>>;
+
 } // namespace
+
+TEST(Allocator, UnequalAllocatorMovePreservesSharedPayload)
+{
+  for (bool assignment : {false, true}) {
+    SCOPED_TRACE(assignment ? "assignment" : "construction");
+    int allocs = 0, deallocs = 0, copies = 0, moves = 0;
+    tracking_allocator<move_observer> a(&allocs, &deallocs, 1), b(&allocs, &deallocs, 2);
+    {
+      observed_cow source(std::allocator_arg, a, std::in_place, "original", copies, moves);
+      observed_cow peer(source);
+      std::optional<observed_cow> target;
+      if (assignment) {
+        target.emplace(std::allocator_arg, b, std::in_place, "destination", copies, moves);
+        *target = std::move(source);
+      } else {
+        target.emplace(std::allocator_arg, b, std::move(source));
+      }
+      EXPECT_EQ(peer->value, "original");
+      EXPECT_EQ((*target)->value, "original");
+      EXPECT_EQ(target->get_allocator(), b);
+      EXPECT_TRUE(source.valueless_after_move());
+      EXPECT_EQ(peer.use_count(), 1);
+      EXPECT_EQ(copies, 1);
+      EXPECT_EQ(moves, 0);
+    }
+    EXPECT_EQ(allocs, deallocs);
+  }
+}
+
+TEST(Allocator, UnequalAllocatorMoveCopiesUniquePayloadThroughConstObserver)
+{
+  for (bool assignment : {false, true}) {
+    SCOPED_TRACE(assignment ? "assignment" : "construction");
+    int allocs = 0, deallocs = 0, copies = 0, moves = 0;
+    tracking_allocator<move_observer> a(&allocs, &deallocs, 1), b(&allocs, &deallocs, 2);
+    {
+      observed_cow source(std::allocator_arg, a, std::in_place, "original", copies, moves);
+      std::optional<observed_cow> target;
+      if (assignment) {
+        target.emplace(std::allocator_arg, b, std::in_place, "destination", copies, moves);
+        *target = std::move(source);
+      } else {
+        target.emplace(std::allocator_arg, b, std::move(source));
+      }
+      EXPECT_EQ((*target)->value, "original");
+      EXPECT_TRUE(source.valueless_after_move());
+      EXPECT_EQ(copies, 1);
+      EXPECT_EQ(moves, 0);
+    }
+    EXPECT_EQ(allocs, deallocs);
+  }
+}
+
+TEST(Allocator, UnequalAllocatorMoveCopyFailurePreservesOwners)
+{
+  for (bool assignment : {false, true}) {
+    SCOPED_TRACE(assignment ? "assignment" : "construction");
+    int allocs = 0, deallocs = 0, copies = 0, moves = 0;
+    tracking_allocator<move_observer> a(&allocs, &deallocs, 1), b(&allocs, &deallocs, 2);
+    {
+      observed_cow source(std::allocator_arg, a, std::in_place, "original", copies, moves, true);
+      observed_cow peer(source);
+      if (assignment) {
+        observed_cow target(std::allocator_arg, b, std::in_place, "destination", copies, moves);
+        EXPECT_THROW(target = std::move(source), std::runtime_error);
+        EXPECT_EQ(target->value, "destination");
+        EXPECT_EQ(target.get_allocator(), b);
+      } else {
+        EXPECT_THROW((observed_cow(std::allocator_arg, b, std::move(source))), std::runtime_error);
+      }
+      ASSERT_FALSE(source.valueless_after_move());
+      EXPECT_TRUE(source.identical_to(peer));
+      EXPECT_EQ(source->value, "original");
+      EXPECT_EQ(peer->value, "original");
+      EXPECT_EQ(copies, 1);
+      EXPECT_EQ(moves, 0);
+    }
+    EXPECT_EQ(allocs, deallocs);
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Exception safety

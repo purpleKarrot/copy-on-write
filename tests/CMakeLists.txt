@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 3.31)
 
 find_package(GTest REQUIRED)
+find_package(Threads REQUIRED)
 
 add_executable(cow_tests
   allocator.cpp
@@ -15,7 +16,7 @@ add_executable(cow_tests
   modifiers.cpp
   observers.cpp
   )
-target_link_libraries(cow_tests PRIVATE copy_on_write GTest::gtest_main)
+target_link_libraries(cow_tests PRIVATE copy_on_write GTest::gtest_main Threads::Threads)
 
 include(GoogleTest)
 gtest_discover_tests(cow_tests
