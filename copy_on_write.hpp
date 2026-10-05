@@ -414,12 +414,6 @@ auto operator==(copy_on_write<T1, A1> const& x,
     return x.valueless_after_move() == y.valueless_after_move();
   }
 
-  if constexpr (std::same_as<T1, T2> && std::same_as<A1, A2>) {
-    if (x.identical_to(y)) {
-      return true;
-    }
-  }
-
   return *x == *y;
 }
 
@@ -436,12 +430,6 @@ auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
 {
   if (x.valueless_after_move() || y.valueless_after_move()) {
     return !x.valueless_after_move() <=> !y.valueless_after_move();
-  }
-
-  if constexpr (std::same_as<T1, T2> && std::same_as<A1, A2>) {
-    if (x.identical_to(y)) {
-      return std::strong_ordering::equal;
-    }
   }
 
   return detail::synth_three_way(*x, *y);

@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 
 #include <compare>
+#include <limits>
 #include <string>
 
 // ---------------------------------------------------------------------------
@@ -22,12 +23,25 @@ TEST(Comparison, EqualityReturnsFalseForDifferentValues)
   EXPECT_FALSE(a == b);
 }
 
-TEST(Comparison, EqualityShortCircuitsViaIdenticalToWhenSharing)
+TEST(Comparison, EqualityOfSharedIntegersReturnsTrue)
 {
   xyz::copy_on_write<int> a(5);
   xyz::copy_on_write<int> b(a);
   ASSERT_TRUE(a.identical_to(b));
   EXPECT_TRUE(a == b);
+}
+
+TEST(Comparison, EqualityPreservesNaNSemanticsRegardlessOfSharing)
+{
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  xyz::copy_on_write<double> a(nan), b(a), c(nan);
+  ASSERT_TRUE(a.identical_to(b));
+  ASSERT_FALSE(a.identical_to(c));
+  EXPECT_FALSE(a == a);
+  EXPECT_FALSE(a == b);
+  EXPECT_FALSE(b == a);
+  EXPECT_FALSE(a == c);
+  EXPECT_FALSE(a == nan);
 }
 
 TEST(Comparison, EqualityBothValuelessAreEqual)
@@ -111,12 +125,41 @@ TEST(Comparison, SpaceshipValuelessIsLessThanLive)
   EXPECT_TRUE(std::is_gt(c <=> a));
 }
 
-TEST(Comparison, SpaceshipShortCircuitsViaIdenticalToWhenSharing)
+TEST(Comparison, SpaceshipOfSharedIntegersYieldsEquivalent)
 {
   xyz::copy_on_write<int> a(5);
   xyz::copy_on_write<int> b(a);
   ASSERT_TRUE(a.identical_to(b));
   EXPECT_TRUE(std::is_eq(a <=> b));
+}
+
+TEST(Comparison, SpaceshipPreservesNaNSemanticsRegardlessOfSharing)
+{
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  xyz::copy_on_write<double> a(nan), b(a), c(nan);
+  ASSERT_TRUE(a.identical_to(b));
+  ASSERT_FALSE(a.identical_to(c));
+  EXPECT_EQ(a <=> a, std::partial_ordering::unordered);
+  EXPECT_EQ(a <=> b, std::partial_ordering::unordered);
+  EXPECT_EQ(b <=> a, std::partial_ordering::unordered);
+  EXPECT_EQ(a <=> c, std::partial_ordering::unordered);
+  EXPECT_EQ(a <=> nan, std::partial_ordering::unordered);
+}
+
+TEST(Comparison, SharedCompositePreservesPayloadComparisonSemantics)
+{
+  struct Measurement
+  {
+    double value;
+    bool operator==(Measurement const&) const = default;
+    auto operator<=>(Measurement const&) const = default;
+  };
+
+  xyz::copy_on_write<Measurement> a(Measurement{std::numeric_limits<double>::quiet_NaN()});
+  xyz::copy_on_write<Measurement> b(a);
+  ASSERT_TRUE(a.identical_to(b));
+  EXPECT_FALSE(a == b);
+  EXPECT_EQ(a <=> b, std::partial_ordering::unordered);
 }
 
 // ---------------------------------------------------------------------------
