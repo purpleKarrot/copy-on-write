@@ -462,7 +462,7 @@ private:
 
 template <typename T1, typename A1, typename T2, typename A2>
 XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T1, A1> const& x,
-                                 copy_on_write<T2, A2> const& y) noexcept(noexcept(*x == *y))
+                                 copy_on_write<T2, A2> const& y) noexcept(noexcept(bool(*x == *y)))
   -> bool
 {
   if (x.valueless_after_move() || y.valueless_after_move()) {
@@ -475,9 +475,13 @@ XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T1, A1> const& x,
 template <typename T, typename A, typename U>
   requires(!detail::is_copy_on_write_v<U>)
 XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T, A> const& x,
-                                 U const& y) noexcept(noexcept(*x == y)) -> bool
+                                 U const& y) noexcept(noexcept(bool(*x == y))) -> bool
 {
-  return !x.valueless_after_move() && (*x == y);
+  if (x.valueless_after_move()) {
+    return false;
+  }
+
+  return *x == y;
 }
 
 template <typename T1, typename A1, typename T2, typename A2>

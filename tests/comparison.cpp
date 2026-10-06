@@ -5,6 +5,7 @@
 
 #include <compare>
 #include <limits>
+#include <stdexcept>
 #include <string>
 
 // ---------------------------------------------------------------------------
@@ -211,4 +212,68 @@ TEST(Comparison, SynthThreeWayFallbackForLessOnlyTypes)
   EXPECT_TRUE(std::is_lt(a <=> b));
   EXPECT_TRUE(std::is_gt(b <=> a));
   EXPECT_TRUE(std::is_eq(a <=> c));
+}
+
+namespace {
+struct equality_result
+{
+  bool equal;
+  bool throws;
+
+  operator bool() const
+  {
+    if (throws) {
+      throw std::runtime_error("equality conversion failed");
+    }
+    return equal;
+  }
+
+  friend bool operator&&(bool, equality_result)
+  {
+    throw std::logic_error("overloaded operator&& must not be called");
+  }
+};
+
+struct proxy_equality
+{
+  int value;
+  bool throws = false;
+
+  equality_result operator==(proxy_equality const& other) const noexcept
+  {
+    return {value == other.value, throws};
+  }
+
+  equality_result operator==(int other) const noexcept
+  {
+    return {value == other, throws};
+  }
+};
+} // namespace
+
+TEST(Comparison, EqualityPropagatesThrowingBoolConversion)
+{
+  xyz::copy_on_write<proxy_equality> a(proxy_equality{1, true});
+  auto b = a;
+  static_assert(!noexcept(a == b));
+  static_assert(!noexcept(a == 1));
+  EXPECT_THROW((void)(a == b), std::runtime_error);
+  EXPECT_THROW((void)(a == 1), std::runtime_error);
+}
+
+TEST(Comparison, RawEqualityDoesNotInvokeOverloadedLogicalAnd)
+{
+  xyz::copy_on_write<proxy_equality> a(proxy_equality{1});
+  EXPECT_TRUE(a == 1);
+  EXPECT_FALSE(a == 2);
+}
+
+TEST(Comparison, ValuelessEqualityDoesNotEvaluatePayloadComparison)
+{
+  xyz::copy_on_write<proxy_equality> a(proxy_equality{1, true});
+  auto live = std::move(a);
+  EXPECT_FALSE(a == live);
+  EXPECT_FALSE(live == a);
+  EXPECT_FALSE(a == 1);
+  EXPECT_TRUE(a == a);
 }
