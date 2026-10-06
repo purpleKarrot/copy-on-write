@@ -90,6 +90,9 @@ template <typename T, typename Allocator>
 class copy_on_write
 {
   using alloc_traits = std::allocator_traits<Allocator>;
+  struct model;
+  using model_alloc_t = typename alloc_traits::template rebind_alloc<model>;
+  using model_pointer = typename std::allocator_traits<model_alloc_t>::pointer;
 
   static_assert(std::is_object_v<T>, "T must be an object type");
   static_assert(!std::is_array_v<T>, "T must not be an array type");
@@ -480,8 +483,6 @@ private:
     XYZ_CONSTEXPR_26 ~model() {}
   };
 
-  using model_alloc_t = typename alloc_traits::template rebind_alloc<model>;
-
   template <typename... Args>
   XYZ_CONSTEXPR_26 static auto _make_model(Allocator& a, Args&&... args)
   {
@@ -498,15 +499,15 @@ private:
     return p;
   }
 
-  XYZ_CONSTEXPR_26 static void _destroy_model(Allocator& a, model* p)
+  XYZ_CONSTEXPR_26 static void _destroy_model(Allocator& a, model_pointer p)
   {
     auto ma = model_alloc_t{a};
     alloc_traits::destroy(a, std::addressof(p->value));
-    std::destroy_at(p);
+    std::destroy_at(std::to_address(p));
     std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);
   }
 
-  XYZ_CONSTEXPR_26 void _reset(model* v)
+  XYZ_CONSTEXPR_26 void _reset(model_pointer v)
   {
     if (_self != nullptr && _self->count.fetch_sub(1, std::memory_order_release) == 1) {
       std::atomic_thread_fence(std::memory_order_acquire);
@@ -516,7 +517,7 @@ private:
   }
 
   [[no_unique_address]] allocator_type _alloc;
-  model* _self;
+  model_pointer _self;
 };
 
 template <typename T, typename A>

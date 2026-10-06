@@ -3,6 +3,7 @@
 #include <copy_on_write.hpp>
 #include <gtest/gtest.h>
 
+#include <iterator>
 #include <memory>
 #include <memory_resource>
 #include <optional>
@@ -65,6 +66,71 @@ struct tracking_allocator
   }
 
   bool operator==(tracking_allocator const& o) const noexcept { return id == o.id; }
+};
+
+// Pointer wrapper with no implicit conversion to a raw pointer.
+template <typename T>
+struct fancy_pointer
+{
+  using element_type = T;
+  using value_type = std::remove_cv_t<T>;
+  using difference_type = std::ptrdiff_t;
+  using iterator_category = std::random_access_iterator_tag;
+  using reference = std::add_lvalue_reference_t<T>;
+  template <typename U> using rebind = fancy_pointer<U>;
+
+  T* address = nullptr;
+  constexpr fancy_pointer() noexcept = default;
+  constexpr fancy_pointer(std::nullptr_t) noexcept {}
+  explicit constexpr fancy_pointer(T* p) noexcept : address(p) {}
+  template <typename U> requires std::is_convertible_v<U*, T*>
+  constexpr fancy_pointer(fancy_pointer<U> p) noexcept : address(p.address) {}
+
+  constexpr T* operator->() const noexcept { return address; }
+  constexpr reference operator*() const noexcept { return *address; }
+  explicit constexpr operator bool() const noexcept { return address != nullptr; }
+  template <typename U = T> requires (!std::is_void_v<U>)
+  static constexpr fancy_pointer pointer_to(U& value) noexcept
+  {
+    return fancy_pointer(std::addressof(value));
+  }
+
+  constexpr fancy_pointer& operator++() { ++address; return *this; }
+  constexpr fancy_pointer operator++(int) { auto old = *this; ++*this; return old; }
+  constexpr fancy_pointer& operator--() { --address; return *this; }
+  constexpr fancy_pointer operator--(int) { auto old = *this; --*this; return old; }
+  constexpr fancy_pointer& operator+=(difference_type n) { address += n; return *this; }
+  constexpr fancy_pointer& operator-=(difference_type n) { address -= n; return *this; }
+  constexpr reference operator[](difference_type n) const { return address[n]; }
+  friend constexpr fancy_pointer operator+(fancy_pointer p, difference_type n) { return p += n; }
+  friend constexpr fancy_pointer operator+(difference_type n, fancy_pointer p) { return p += n; }
+  friend constexpr fancy_pointer operator-(fancy_pointer p, difference_type n) { return p -= n; }
+  friend constexpr difference_type operator-(fancy_pointer a, fancy_pointer b)
+  {
+    return a.address - b.address;
+  }
+  constexpr bool operator==(fancy_pointer const&) const = default;
+  constexpr auto operator<=>(fancy_pointer const&) const = default;
+};
+
+template <typename T>
+struct fancy_allocator : tracking_allocator<T>
+{
+  using pointer = fancy_pointer<T>;
+  template <typename U> struct rebind { using other = fancy_allocator<U>; };
+  using tracking_allocator<T>::tracking_allocator;
+  fancy_allocator() = default;
+  template <typename U>
+  fancy_allocator(fancy_allocator<U> const& other) noexcept : tracking_allocator<T>(other) {}
+
+  pointer allocate(std::size_t n)
+  {
+    return pointer(tracking_allocator<T>::allocate(n));
+  }
+  void deallocate(pointer p, std::size_t n) noexcept
+  {
+    tracking_allocator<T>::deallocate(p.address, n);
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -855,4 +921,53 @@ TEST(Allocator, UnequalAllocatorMoveConstructionUsesConstLvalueCopy)
   }
   EXPECT_EQ(allocs1, deallocs1);
   EXPECT_EQ(allocs2, deallocs2);
+}
+
+TEST(Allocator, FancyPointersSupportOwnershipAndObservers)
+{
+  using cow = xyz::copy_on_write<int, fancy_allocator<int>>;
+  static_assert(std::same_as<cow::const_pointer, fancy_pointer<const int>>);
+  static_assert(!std::is_convertible_v<fancy_pointer<int>, int*>);
+  int allocs = 0, deallocs = 0;
+  fancy_allocator<int> alloc(&allocs, &deallocs, 7);
+  {
+    cow original(std::allocator_arg, alloc, 1);
+    auto value = original;
+    EXPECT_TRUE(value.identical_to(original));
+    EXPECT_EQ(value.use_count(), 2);
+    EXPECT_EQ(*value.operator->(), 1);
+    value.modify([](int& n) { n = 2; });
+    EXPECT_EQ(*original, 1);
+    EXPECT_EQ(*value, 2);
+    EXPECT_FALSE(value.identical_to(original));
+    value = 3;
+    auto moved = std::move(value);
+    EXPECT_TRUE(value.valueless_after_move());
+    original.swap(moved);
+    EXPECT_EQ(*original, 3);
+    EXPECT_EQ(*moved, 1);
+    value = 4;
+    EXPECT_EQ(*value, 4);
+    EXPECT_EQ(allocs, 3);
+  }
+  EXPECT_EQ(allocs, deallocs);
+}
+
+TEST(Allocator, FancyPointersDeallocateFailedReplacement)
+{
+  int allocs = 0, deallocs = 0;
+  fancy_allocator<int> alloc(&allocs, &deallocs, 7);
+  {
+    xyz::copy_on_write<int, fancy_allocator<int>> original(std::allocator_arg, alloc, 1);
+    auto value = original;
+    EXPECT_THROW(value.modify([](int& n) {
+      n = 2;
+      throw std::runtime_error("action failed");
+    }), std::runtime_error);
+    EXPECT_TRUE(value.identical_to(original));
+    EXPECT_EQ(*value, 1);
+    EXPECT_EQ(allocs, 2);
+    EXPECT_EQ(deallocs, 1);
+  }
+  EXPECT_EQ(allocs, deallocs);
 }
