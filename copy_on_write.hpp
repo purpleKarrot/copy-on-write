@@ -407,6 +407,49 @@ public:
     }
   }
 
+  template <typename U, typename AA>
+  friend XYZ_CONSTEXPR_26 bool operator==(
+    copy_on_write const& x, copy_on_write<U, AA> const& y) noexcept(noexcept(bool(*x == *y)))
+  {
+    if (x.valueless_after_move() || y.valueless_after_move()) {
+      return x.valueless_after_move() == y.valueless_after_move();
+    }
+    return *x == *y;
+  }
+
+  template <typename U>
+    requires(!detail::is_copy_on_write_v<U>)
+  friend XYZ_CONSTEXPR_26 bool operator==(
+    copy_on_write const& x, U const& y) noexcept(noexcept(bool(*x == y)))
+  {
+    if (x.valueless_after_move()) {
+      return false;
+    }
+    return *x == y;
+  }
+
+  template <typename U, typename AA>
+  friend XYZ_CONSTEXPR_26 auto operator<=>(
+    copy_on_write const& x, copy_on_write<U, AA> const& y)
+    -> detail::synth_three_way_result<T, U>
+  {
+    if (x.valueless_after_move() || y.valueless_after_move()) {
+      return !x.valueless_after_move() <=> !y.valueless_after_move();
+    }
+    return detail::synth_three_way(*x, *y);
+  }
+
+  template <typename U>
+    requires(!detail::is_copy_on_write_v<U>)
+  friend XYZ_CONSTEXPR_26 auto operator<=>(copy_on_write const& x, U const& y)
+    -> detail::synth_three_way_result<T, U>
+  {
+    if (x.valueless_after_move()) {
+      return std::strong_ordering::less;
+    }
+    return detail::synth_three_way(*x, y);
+  }
+
 private:
   struct model
   {
@@ -459,53 +502,6 @@ private:
   [[no_unique_address]] allocator_type _alloc;
   model* _self;
 };
-
-template <typename T1, typename A1, typename T2, typename A2>
-XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T1, A1> const& x,
-                                 copy_on_write<T2, A2> const& y) noexcept(noexcept(bool(*x == *y)))
-  -> bool
-{
-  if (x.valueless_after_move() || y.valueless_after_move()) {
-    return x.valueless_after_move() == y.valueless_after_move();
-  }
-
-  return *x == *y;
-}
-
-template <typename T, typename A, typename U>
-  requires(!detail::is_copy_on_write_v<U>)
-XYZ_CONSTEXPR_26 auto operator==(copy_on_write<T, A> const& x,
-                                 U const& y) noexcept(noexcept(bool(*x == y))) -> bool
-{
-  if (x.valueless_after_move()) {
-    return false;
-  }
-
-  return *x == y;
-}
-
-template <typename T1, typename A1, typename T2, typename A2>
-XYZ_CONSTEXPR_26 auto operator<=>(copy_on_write<T1, A1> const& x, copy_on_write<T2, A2> const& y)
-  -> detail::synth_three_way_result<T1, T2>
-{
-  if (x.valueless_after_move() || y.valueless_after_move()) {
-    return !x.valueless_after_move() <=> !y.valueless_after_move();
-  }
-
-  return detail::synth_three_way(*x, *y);
-}
-
-template <typename T, typename A, typename U>
-  requires(!detail::is_copy_on_write_v<U>)
-XYZ_CONSTEXPR_26 auto operator<=>(copy_on_write<T, A> const& x, U const& y)
-  -> detail::synth_three_way_result<T, U>
-{
-  if (x.valueless_after_move()) {
-    return std::strong_ordering::less;
-  }
-
-  return detail::synth_three_way(*x, y);
-}
 
 template <typename T, typename A>
 XYZ_CONSTEXPR_26 void swap(copy_on_write<T, A>& x,

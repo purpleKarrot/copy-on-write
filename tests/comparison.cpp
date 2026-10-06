@@ -277,3 +277,37 @@ TEST(Comparison, ValuelessEqualityDoesNotEvaluatePayloadComparison)
   EXPECT_FALSE(a == 1);
   EXPECT_TRUE(a == a);
 }
+
+TEST(Comparison, HiddenFriendsCompareDifferentPayloadAndAllocatorTypes)
+{
+  xyz::copy_on_write<int> a(3);
+  xyz::pmr::copy_on_write<long> b(4L);
+  EXPECT_FALSE(a == b);
+  EXPECT_FALSE(b == a);
+  EXPECT_TRUE(a != b);
+  EXPECT_TRUE(a < b);
+  EXPECT_TRUE(b > a);
+  EXPECT_TRUE(std::is_lt(a <=> b));
+  EXPECT_TRUE(std::is_gt(b <=> a));
+
+  b = 3L;
+  EXPECT_TRUE(a == b);
+  EXPECT_TRUE(b == a);
+  EXPECT_TRUE(std::is_eq(a <=> b));
+}
+
+TEST(Comparison, HiddenFriendsSupportRewrittenRawValueComparisons)
+{
+  xyz::copy_on_write<int> value(3);
+  EXPECT_TRUE(3 == value);
+  EXPECT_TRUE(4 != value);
+  EXPECT_TRUE(2 < value);
+  EXPECT_TRUE(4 > value);
+  EXPECT_TRUE(std::is_lt(2 <=> value));
+  EXPECT_TRUE(std::is_gt(4 <=> value));
+
+  auto owner = std::move(value);
+  EXPECT_FALSE(3 == value);
+  EXPECT_TRUE(3 > value);
+  EXPECT_TRUE(std::is_gt(3 <=> value));
+}
