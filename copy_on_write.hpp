@@ -149,7 +149,7 @@ public:
   }
 
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a)
-    : _alloc{a}
+    : _alloc(a)
     , _self{_make_model(_alloc)}
   {
     static_assert(std::is_default_constructible_v<T>);
@@ -160,7 +160,7 @@ public:
              !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
              std::is_constructible_v<T, U>)
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, U&& u)
-    : _alloc{a}
+    : _alloc(a)
     , _self{_make_model(_alloc, std::forward<U>(u))}
   {
   }
@@ -169,7 +169,7 @@ public:
     requires std::is_constructible_v<T, Us...>
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
                                           Us&&... us)
-    : _alloc{a}
+    : _alloc(a)
     , _self{_make_model(_alloc, std::forward<Us>(us)...)}
   {
   }
@@ -178,7 +178,7 @@ public:
     requires std::is_constructible_v<T, std::initializer_list<I>&, Us...>
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
                                           std::initializer_list<I> ilist, Us&&... us)
-    : _alloc{a}
+    : _alloc(a)
     , _self{_make_model(_alloc, ilist, std::forward<Us>(us)...)}
   {
   }
@@ -186,7 +186,7 @@ public:
   XYZ_CONSTEXPR_26 explicit copy_on_write(
     std::allocator_arg_t, Allocator const& a,
     copy_on_write const& other) noexcept(alloc_traits::is_always_equal::value)
-    : _alloc{a}
+    : _alloc(a)
     , _self{nullptr}
   {
     static_assert(std::is_copy_constructible_v<T>);
@@ -206,7 +206,7 @@ public:
   XYZ_CONSTEXPR_26 explicit copy_on_write(
     std::allocator_arg_t, Allocator const& a,
     copy_on_write&& other) noexcept(alloc_traits::is_always_equal::value)
-    : _alloc{a}
+    : _alloc(a)
     , _self{nullptr}
   {
     if constexpr (!alloc_traits::is_always_equal::value) {
@@ -231,7 +231,7 @@ public:
 
   XYZ_CONSTEXPR_26 copy_on_write(copy_on_write const& x) noexcept(
     alloc_traits::is_always_equal::value && detail::nothrow_allocator_selection<Allocator>)
-    : _alloc{alloc_traits::select_on_container_copy_construction(x._alloc)}
+    : _alloc(alloc_traits::select_on_container_copy_construction(x._alloc))
     , _self{nullptr}
   {
     static_assert(std::is_copy_constructible_v<T>);
@@ -249,7 +249,7 @@ public:
   }
 
   XYZ_CONSTEXPR_26 copy_on_write(copy_on_write&& other) noexcept
-    : _alloc{other._alloc}
+    : _alloc(other._alloc)
     , _self{std::exchange(other._self, nullptr)}
   {
   }
@@ -486,7 +486,7 @@ private:
   template <typename... Args>
   XYZ_CONSTEXPR_26 static auto _make_model(Allocator& a, Args&&... args)
   {
-    auto ma = model_alloc_t{a};
+    auto ma = model_alloc_t(a);
     auto p = std::allocator_traits<model_alloc_t>::allocate(ma, 1);
     std::construct_at(std::to_address(p));
     try {
@@ -501,7 +501,7 @@ private:
 
   XYZ_CONSTEXPR_26 static void _destroy_model(Allocator& a, model_pointer p)
   {
-    auto ma = model_alloc_t{a};
+    auto ma = model_alloc_t(a);
     alloc_traits::destroy(a, std::addressof(p->value));
     std::destroy_at(std::to_address(p));
     std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);

@@ -3,6 +3,7 @@
 #include <copy_on_write.hpp>
 #include <gtest/gtest.h>
 
+#include <initializer_list>
 #include <iterator>
 #include <memory>
 #include <memory_resource>
@@ -10,6 +11,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace {
 
@@ -130,6 +132,20 @@ struct fancy_allocator : tracking_allocator<T>
   void deallocate(pointer p, std::size_t n) noexcept
   {
     tracking_allocator<T>::deallocate(p.address, n);
+  }
+};
+
+template <typename T>
+struct brace_sensitive_allocator : tracking_allocator<T>
+{
+  template <typename U> struct rebind { using other = brace_sensitive_allocator<U>; };
+  using tracking_allocator<T>::tracking_allocator;
+  brace_sensitive_allocator() = default;
+  brace_sensitive_allocator(std::initializer_list<brace_sensitive_allocator>) = delete;
+  template <typename U>
+  brace_sensitive_allocator(brace_sensitive_allocator<U> const& other) noexcept
+    : tracking_allocator<T>(other)
+  {
   }
 };
 
@@ -968,6 +984,39 @@ TEST(Allocator, FancyPointersDeallocateFailedReplacement)
     EXPECT_EQ(*value, 1);
     EXPECT_EQ(allocs, 2);
     EXPECT_EQ(deallocs, 1);
+  }
+  EXPECT_EQ(allocs, deallocs);
+}
+
+TEST(Allocator, AllocatorInitializationDoesNotSelectInitializerListConstructor)
+{
+  using payload = std::vector<int>;
+  using allocator = brace_sensitive_allocator<payload>;
+  using cow = xyz::copy_on_write<payload, allocator>;
+  static_assert(std::is_copy_constructible_v<allocator>);
+  int allocs = 0, deallocs = 0;
+  allocator alloc(&allocs, &deallocs, 7);
+  {
+    cow empty(std::allocator_arg, alloc);
+    cow value(std::allocator_arg, alloc, payload{1, 2});
+    cow in_place(std::allocator_arg, alloc, std::in_place, 3u, 7);
+    cow list(std::allocator_arg, alloc, std::in_place, {4, 5});
+    cow copied(value);
+    cow moved(std::move(copied));
+    cow allocated_copy(std::allocator_arg, alloc, value);
+    cow allocated_move(std::allocator_arg, alloc, std::move(allocated_copy));
+
+    EXPECT_TRUE(empty->empty());
+    EXPECT_EQ(*value, (payload{1, 2}));
+    EXPECT_EQ(*in_place, (payload{7, 7, 7}));
+    EXPECT_EQ(*list, (payload{4, 5}));
+    EXPECT_TRUE(moved.identical_to(value));
+    EXPECT_TRUE(allocated_move.identical_to(value));
+    EXPECT_TRUE(copied.valueless_after_move());
+    EXPECT_TRUE(allocated_copy.valueless_after_move());
+    EXPECT_EQ(moved.get_allocator(), alloc);
+    EXPECT_EQ(allocated_move.get_allocator(), alloc);
+    EXPECT_EQ(allocs, 4);
   }
   EXPECT_EQ(allocs, deallocs);
 }
