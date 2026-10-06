@@ -113,7 +113,7 @@ public:
   //
 
   XYZ_CONSTEXPR_26 explicit copy_on_write()
-    requires std::default_initializable<Allocator>
+    requires std::is_default_constructible_v<Allocator>
     : _alloc{}
     , _self{_make_model(_alloc)}
   {
@@ -123,7 +123,7 @@ public:
   template <typename U = T>
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
              !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
-             std::constructible_from<T, U> && std::default_initializable<Allocator>)
+             std::is_constructible_v<T, U> && std::is_default_constructible_v<Allocator>)
   XYZ_CONSTEXPR_26 explicit copy_on_write(U&& x)
     : _alloc{}
     , _self{_make_model(_alloc, std::forward<U>(x))}
@@ -131,7 +131,7 @@ public:
   }
 
   template <typename... Us>
-    requires(std::constructible_from<T, Us...> && std::default_initializable<Allocator>)
+    requires(std::is_constructible_v<T, Us...> && std::is_default_constructible_v<Allocator>)
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::in_place_t, Us&&... us)
     : _alloc{}
     , _self{_make_model(_alloc, std::forward<Us>(us)...)}
@@ -139,8 +139,8 @@ public:
   }
 
   template <typename I, typename... Us>
-    requires(std::constructible_from<T, std::initializer_list<I>&, Us...> &&
-             std::default_initializable<Allocator>)
+    requires(std::is_constructible_v<T, std::initializer_list<I>&, Us...> &&
+             std::is_default_constructible_v<Allocator>)
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::in_place_t, std::initializer_list<I> ilist,
                                           Us&&... us)
     : _alloc{}
@@ -158,7 +158,7 @@ public:
   template <typename U = T>
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
              !std::same_as<std::remove_cvref_t<U>, std::in_place_t> &&
-             std::constructible_from<T, U>)
+             std::is_constructible_v<T, U>)
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, U&& u)
     : _alloc{a}
     , _self{_make_model(_alloc, std::forward<U>(u))}
@@ -166,7 +166,7 @@ public:
   }
 
   template <typename... Us>
-    requires std::constructible_from<T, Us...>
+    requires std::is_constructible_v<T, Us...>
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
                                           Us&&... us)
     : _alloc{a}
@@ -175,7 +175,7 @@ public:
   }
 
   template <typename I, typename... Us>
-    requires std::constructible_from<T, std::initializer_list<I>&, Us...>
+    requires std::is_constructible_v<T, std::initializer_list<I>&, Us...>
   XYZ_CONSTEXPR_26 explicit copy_on_write(std::allocator_arg_t, Allocator const& a, std::in_place_t,
                                           std::initializer_list<I> ilist, Us&&... us)
     : _alloc{a}

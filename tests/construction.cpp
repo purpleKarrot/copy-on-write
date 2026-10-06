@@ -3,6 +3,7 @@
 #include <copy_on_write.hpp>
 #include <gtest/gtest.h>
 
+#include <initializer_list>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -217,4 +218,43 @@ TEST(Construction, DeductionGuideFromAllocArgValue)
   auto x = xyz::copy_on_write(std::allocator_arg, std::allocator<double>{}, 3.14);
   static_assert(std::is_same_v<decltype(x), xyz::copy_on_write<double, std::allocator<double>>>);
   EXPECT_DOUBLE_EQ(*x, 3.14);
+}
+
+TEST(Construction, ConstraintsDoNotRequireNothrowPayloadDestruction)
+{
+  struct payload
+  {
+    int value = 0;
+    payload() = default;
+    explicit payload(int n) : value(n) {}
+    payload(std::initializer_list<int> values, int extra = 0) : value(extra)
+    {
+      for (int n : values) {
+        value += n;
+      }
+    }
+    ~payload() noexcept(false) {} // Potentially throwing declaration; body does not throw.
+  };
+  static_assert(std::is_constructible_v<payload, int>);
+  static_assert(!std::constructible_from<payload, int>);
+
+  using cow = xyz::copy_on_write<payload>;
+  std::allocator<payload> alloc;
+  cow default_value;
+  cow value(1);
+  cow in_place(std::in_place, 2);
+  cow list(std::in_place, {3, 4}, 5);
+  cow allocated_default(std::allocator_arg, alloc);
+  cow allocated_value(std::allocator_arg, alloc, 6);
+  cow allocated_in_place(std::allocator_arg, alloc, std::in_place, 7);
+  cow allocated_list(std::allocator_arg, alloc, std::in_place, {8, 9}, 10);
+
+  EXPECT_EQ(default_value->value, 0);
+  EXPECT_EQ(value->value, 1);
+  EXPECT_EQ(in_place->value, 2);
+  EXPECT_EQ(list->value, 12);
+  EXPECT_EQ(allocated_default->value, 0);
+  EXPECT_EQ(allocated_value->value, 6);
+  EXPECT_EQ(allocated_in_place->value, 7);
+  EXPECT_EQ(allocated_list->value, 27);
 }
