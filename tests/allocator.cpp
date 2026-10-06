@@ -427,6 +427,66 @@ TEST(Allocator, ExceptionDeallocates)
   EXPECT_EQ(deallocs, 1);
 }
 
+TEST(Allocator, SharedActionFailureDeallocatesReplacementWithOriginalAllocator)
+{
+  int allocs = 0, deallocs = 0;
+  tracking_allocator<int> alloc(&allocs, &deallocs, 1);
+  {
+    xyz::copy_on_write<int, tracking_allocator<int>> original(std::allocator_arg, alloc, 5);
+    auto value = original;
+
+    EXPECT_THROW(value.modify([](int& v) {
+      v = 15;
+      throw std::runtime_error("action failed");
+    }),
+                 std::runtime_error);
+
+    EXPECT_EQ(allocs, 2);
+    EXPECT_EQ(deallocs, 1);
+    EXPECT_EQ(*value, 5);
+    EXPECT_TRUE(value.identical_to(original));
+    EXPECT_EQ(value.get_allocator(), alloc);
+  }
+  EXPECT_EQ(allocs, deallocs);
+}
+
+TEST(Allocator, SharedTransformationResultConstructionFailurePreservesOwnership)
+{
+  struct throwing_move
+  {
+    int value;
+    explicit throwing_move(int v)
+      : value(v)
+    {
+    }
+    throwing_move(throwing_move const&) = default;
+    throwing_move(throwing_move&&) { throw std::runtime_error("move failed"); }
+  };
+  int allocs = 0, deallocs = 0;
+  tracking_allocator<throwing_move> alloc(&allocs, &deallocs, 1);
+  {
+    xyz::copy_on_write<throwing_move, tracking_allocator<throwing_move>> original(
+      std::allocator_arg, alloc, std::in_place, 5);
+    auto value = original;
+    auto address = &*value;
+    bool action_called = false;
+
+    EXPECT_THROW(value.modify([&](throwing_move&) { action_called = true; },
+                              [](throwing_move const& v) { return throwing_move(v.value + 1); }),
+                 std::runtime_error);
+
+    EXPECT_FALSE(action_called);
+    EXPECT_EQ(value->value, 5);
+    EXPECT_EQ(&*value, address);
+    EXPECT_TRUE(value.identical_to(original));
+    EXPECT_EQ(value.use_count(), 2);
+    EXPECT_EQ(value.get_allocator(), alloc);
+    EXPECT_EQ(allocs, 2);
+    EXPECT_EQ(deallocs, 1);
+  }
+  EXPECT_EQ(allocs, deallocs);
+}
+
 // ---------------------------------------------------------------------------
 // Basic allocation tracking
 // ---------------------------------------------------------------------------

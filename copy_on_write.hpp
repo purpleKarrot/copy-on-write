@@ -364,20 +364,32 @@ public:
   template <detail::action<T> Action>
   XYZ_CONSTEXPR_26 void modify(Action&& action)
   {
-    if (use_count() > 1) {
-      _reset(_make_model(_alloc, std::as_const(_self->value)));
-    }
+    static_assert(std::is_copy_constructible_v<T>);
 
-    std::forward<Action>(action)(_self->value);
+    if (use_count() > 1) {
+      auto replacement = _make_model(_alloc, std::as_const(_self->value));
+      try {
+        std::invoke(std::forward<Action>(action), replacement->value);
+      } catch (...) {
+        _destroy_model(_alloc, replacement);
+        throw;
+      }
+      _reset(replacement);
+    } else {
+      std::invoke(std::forward<Action>(action), _self->value);
+    }
   }
 
   template <detail::action<T> Action, detail::transformation<T> Transform>
   XYZ_CONSTEXPR_26 void modify(Action&& action, Transform&& transform)
   {
+    static_assert(std::is_move_constructible_v<T>);
+
     if (use_count() > 1) {
-      _reset(_make_model(_alloc, std::forward<Transform>(transform)(std::as_const(_self->value))));
+      _reset(_make_model(
+        _alloc, std::invoke(std::forward<Transform>(transform), std::as_const(_self->value))));
     } else {
-      std::forward<Action>(action)(_self->value);
+      std::invoke(std::forward<Action>(action), _self->value);
     }
   }
 

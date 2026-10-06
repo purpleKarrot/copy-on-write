@@ -7,6 +7,7 @@
 #include <functional>
 #include <latch>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <utility>
@@ -17,6 +18,7 @@ struct tracked_payload
 {
   std::atomic<int>* live;
   std::function<void()> on_copy;
+  int value = 0;
 
   explicit tracked_payload(std::atomic<int>& count, std::function<void()> hook = {})
     : live{&count}
@@ -28,6 +30,7 @@ struct tracked_payload
   tracked_payload(tracked_payload const& other)
     : live{other.live}
     , on_copy{other.on_copy}
+    , value{other.value}
   {
     ++*live;
     if (on_copy) {
@@ -38,6 +41,7 @@ struct tracked_payload
   tracked_payload(tracked_payload&& other) noexcept
     : live{other.live}
     , on_copy{std::move(other.on_copy)}
+    , value{other.value}
   {
     ++*live;
   }
@@ -118,6 +122,124 @@ TEST(Modifiers, ModifyActionOnSharedLeavesOriginalUseCountAtOne)
   EXPECT_EQ(b.use_count(), 1);
 }
 
+TEST(Modifiers, SharedActionFailurePreservesValueAndIdentityAndDestroysReplacement)
+{
+  std::atomic<int> live = 0;
+  {
+    xyz::copy_on_write<tracked_payload> original(std::in_place, live);
+    auto value = original;
+    auto address = &*value;
+
+    EXPECT_THROW(value.modify([&](tracked_payload& replacement) {
+      replacement.value = 99;
+      EXPECT_EQ(live.load(), 2);
+      EXPECT_EQ(&*value, address);
+      EXPECT_EQ(value->value, 0);
+      EXPECT_TRUE(value.identical_to(original));
+      throw std::runtime_error("action failed");
+    }),
+                 std::runtime_error);
+
+    EXPECT_EQ(value->value, 0);
+    EXPECT_EQ(original->value, 0);
+    EXPECT_EQ(&*value, address);
+    EXPECT_TRUE(value.identical_to(original));
+    EXPECT_EQ(value.use_count(), 2);
+    EXPECT_EQ(live.load(), 1);
+  }
+  EXPECT_EQ(live.load(), 0);
+}
+
+TEST(Modifiers, SharedActionSuccessCommitsReplacementAfterCallback)
+{
+  xyz::copy_on_write<int> original(5);
+  auto value = original;
+  auto address = &*value;
+
+  value.modify([&](int& replacement) {
+    replacement = 15;
+    EXPECT_EQ(&*value, address);
+    EXPECT_EQ(*value, 5);
+    EXPECT_TRUE(value.identical_to(original));
+  });
+
+  EXPECT_EQ(*value, 15);
+  EXPECT_EQ(*original, 5);
+  EXPECT_NE(&*value, address);
+  EXPECT_EQ(value.use_count(), 1);
+  EXPECT_EQ(original.use_count(), 1);
+}
+
+TEST(Modifiers, SharedActionFailureRetainsOriginalWhenOtherOwnerIsReleased)
+{
+  std::atomic<int> live = 0;
+  {
+    xyz::copy_on_write<tracked_payload> value(std::in_place, live);
+    std::optional<xyz::copy_on_write<tracked_payload>> other(value);
+    auto address = &*value;
+
+    EXPECT_THROW(value.modify([&](tracked_payload& replacement) {
+      replacement.value = 99;
+      other.reset();
+      EXPECT_EQ(live.load(), 2);
+      throw std::runtime_error("action failed");
+    }),
+                 std::runtime_error);
+
+    EXPECT_EQ(value->value, 0);
+    EXPECT_EQ(&*value, address);
+    EXPECT_EQ(value.use_count(), 1);
+    EXPECT_EQ(live.load(), 1);
+  }
+  EXPECT_EQ(live.load(), 0);
+}
+
+TEST(Modifiers, ExclusiveActionFailureRetainsPartialMutation)
+{
+  for (bool transform : {false, true}) {
+    SCOPED_TRACE(transform ? "transform" : "action");
+    xyz::copy_on_write<int> value(5);
+    auto address = &*value;
+    auto action = [](int& v) {
+      v = 15;
+      throw std::runtime_error("action failed");
+    };
+    if (transform) {
+      EXPECT_THROW(value.modify(action,
+                                [](int const& v) {
+                                  ADD_FAILURE() << "transformation invoked for exclusive ownership";
+                                  return v;
+                                }),
+                   std::runtime_error);
+    } else {
+      EXPECT_THROW(value.modify(action), std::runtime_error);
+    }
+    EXPECT_EQ(*value, 15);
+    EXPECT_EQ(&*value, address);
+    EXPECT_EQ(value.use_count(), 1);
+  }
+}
+
+TEST(Modifiers, SharedCopyFailurePreservesOwnershipAndDoesNotInvokeAction)
+{
+  struct throwing_copy
+  {
+    throwing_copy() = default;
+    throwing_copy(throwing_copy const&) { throw std::runtime_error("copy failed"); }
+  };
+  xyz::copy_on_write<throwing_copy> original;
+  auto value = original;
+  auto address = &*value;
+  bool action_called = false;
+
+  EXPECT_THROW(value.modify([&](throwing_copy&) { action_called = true; }), std::runtime_error);
+
+  EXPECT_FALSE(action_called);
+  EXPECT_EQ(&*value, address);
+  EXPECT_TRUE(value.identical_to(original));
+  EXPECT_EQ(value.use_count(), 2);
+}
+
 // ---------------------------------------------------------------------------
 // modify(action, transform) — two-argument overload
 // ---------------------------------------------------------------------------
@@ -164,6 +286,48 @@ TEST(Modifiers, ModifyActionTransformCallsTransformWhenShared)
   EXPECT_EQ(*a, "hello"); // original unaffected
   EXPECT_TRUE(transform_called);
   EXPECT_FALSE(action_called);
+}
+
+TEST(Modifiers, SharedTransformationFailurePreservesValueAndIdentity)
+{
+  xyz::copy_on_write<int> original(5);
+  auto value = original;
+  auto address = &*value;
+  bool action_called = false;
+
+  EXPECT_THROW(
+    value.modify([&](int&) { action_called = true; },
+                 [](int const&) -> int { throw std::runtime_error("transformation failed"); }),
+    std::runtime_error);
+
+  EXPECT_FALSE(action_called);
+  EXPECT_EQ(*value, 5);
+  EXPECT_EQ(&*value, address);
+  EXPECT_TRUE(value.identical_to(original));
+  EXPECT_EQ(value.use_count(), 2);
+}
+
+TEST(Modifiers, ModifyInvokesMemberFunctionPointers)
+{
+  struct payload
+  {
+    int value;
+    void increment() { ++value; }
+    payload transformed() const { return {value + 1}; }
+  };
+  xyz::copy_on_write<payload> value(payload{5});
+  value.modify(&payload::increment);
+  EXPECT_EQ(value->value, 6);
+  auto shared = value;
+  shared.modify(&payload::increment);
+  EXPECT_EQ(shared->value, 7);
+  EXPECT_EQ(value->value, 6);
+  shared = value;
+  shared.modify(&payload::increment, &payload::transformed);
+  EXPECT_EQ(shared->value, 7);
+  shared.modify(&payload::increment, &payload::transformed);
+  EXPECT_EQ(shared->value, 8);
+  EXPECT_EQ(value->value, 6);
 }
 
 // ---------------------------------------------------------------------------
