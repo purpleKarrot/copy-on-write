@@ -126,3 +126,29 @@ TEST(Assignment, ValueAssignmentWithRvalueReference)
   x = std::string("new");
   EXPECT_EQ(*x, "new");
 }
+
+TEST(Assignment, ValueAssignmentAcceptsAssignableTypesWithoutCommonReference)
+{
+  struct payload
+  {
+    int value;
+    explicit payload(int n) : value(n) {}
+    payload& operator=(int n)
+    {
+      value = n;
+      return *this;
+    }
+  };
+  static_assert(std::is_assignable_v<payload&, int>);
+  static_assert(!std::assignable_from<payload&, int>);
+
+  xyz::copy_on_write<payload> value(std::in_place, 1);
+  auto address = &*value;
+  value = 2;
+  EXPECT_EQ(value->value, 2);
+  EXPECT_EQ(&*value, address);
+  auto original = value;
+  value = 3;
+  EXPECT_EQ(value->value, 3);
+  EXPECT_EQ(original->value, 2);
+}

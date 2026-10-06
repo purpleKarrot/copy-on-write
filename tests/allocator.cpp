@@ -714,3 +714,68 @@ TEST(Allocator, CopyAssignmentWithDifferentNonPropagatingAllocatorAllocatesNewMo
   EXPECT_EQ(b.get_allocator(), ta2); // allocator not propagated (POCCA = false)
   EXPECT_EQ(allocs2, 2);             // one for construction, one for copy assignment
 }
+
+TEST(Allocator, ValueAssignmentPreservesPropagatingAllocator)
+{
+  int allocs = 0, deallocs = 0;
+  pocma_allocator<int> alloc(&allocs, &deallocs, 7);
+  {
+    xyz::copy_on_write<int, pocma_allocator<int>> original(std::allocator_arg, alloc, 1);
+    auto value = original;
+    value = 42;
+    EXPECT_EQ(value.get_allocator(), alloc);
+    EXPECT_EQ(*value, 42);
+    EXPECT_EQ(*original, 1);
+    EXPECT_EQ(allocs, 2);
+    EXPECT_EQ(deallocs, 0);
+
+    auto moved = std::move(value);
+    value = 99;
+    EXPECT_EQ(value.get_allocator(), alloc);
+    EXPECT_EQ(*value, 99);
+    EXPECT_EQ(*moved, 42);
+    EXPECT_EQ(allocs, 3);
+  }
+  EXPECT_EQ(deallocs, allocs);
+}
+
+TEST(Allocator, ValueConstructionFailurePreservesOwnershipAndAllocator)
+{
+  struct payload
+  {
+    int value;
+    explicit payload(int n) : value(n)
+    {
+      if (n < 0) {
+        throw std::runtime_error("construction failed");
+      }
+    }
+    payload& operator=(int n)
+    {
+      value = n;
+      return *this;
+    }
+  };
+
+  int allocs = 0, deallocs = 0;
+  tracking_allocator<payload> alloc(&allocs, &deallocs, 7);
+  {
+    xyz::copy_on_write<payload, tracking_allocator<payload>> original(
+      std::allocator_arg, alloc, std::in_place, 1);
+    auto value = original;
+    EXPECT_THROW(value = -1, std::runtime_error);
+    EXPECT_TRUE(value.identical_to(original));
+    EXPECT_EQ(value->value, 1);
+    EXPECT_EQ(value.get_allocator(), alloc);
+    EXPECT_EQ(allocs, 2);
+    EXPECT_EQ(deallocs, 1);
+
+    auto moved = std::move(value);
+    EXPECT_THROW(value = -1, std::runtime_error);
+    EXPECT_TRUE(value.valueless_after_move());
+    EXPECT_EQ(value.get_allocator(), alloc);
+    EXPECT_EQ(allocs, 3);
+    EXPECT_EQ(deallocs, 2);
+  }
+  EXPECT_EQ(deallocs, allocs);
+}

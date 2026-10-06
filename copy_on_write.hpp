@@ -308,7 +308,7 @@ public:
 
   template <typename U = T>
     requires(!std::same_as<std::remove_cvref_t<U>, copy_on_write> &&
-             std::constructible_from<T, U> && std::assignable_from<T&, U>)
+             std::is_constructible_v<T, U> && std::is_assignable_v<T&, U>)
   XYZ_CONSTEXPR_26 auto operator=(U&& x) -> copy_on_write&
   {
     if (_self != nullptr && use_count() == 1) {
@@ -316,7 +316,8 @@ public:
       return *this;
     }
 
-    return *this = copy_on_write(std::forward<U>(x));
+    _reset(_make_model(_alloc, std::forward<U>(x)));
+    return *this;
   }
 
   //
