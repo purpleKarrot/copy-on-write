@@ -779,3 +779,80 @@ TEST(Allocator, ValueConstructionFailurePreservesOwnershipAndAllocator)
   }
   EXPECT_EQ(deallocs, allocs);
 }
+
+TEST(Allocator, AlwaysEqualAllocatorMovesNoncopyablePayloadWithoutCopying)
+{
+  using payload = std::unique_ptr<int>;
+  using cow = xyz::copy_on_write<payload>;
+  cow source(std::in_place, std::make_unique<int>(42));
+  auto address = &*source;
+  cow target(std::allocator_arg, std::allocator<payload>{}, std::move(source));
+  EXPECT_TRUE(source.valueless_after_move());
+  EXPECT_EQ(&*target, address);
+  EXPECT_EQ(**target, 42);
+
+  source = std::move(target);
+  EXPECT_TRUE(target.valueless_after_move());
+  EXPECT_EQ(&*source, address);
+  EXPECT_EQ(**source, 42);
+
+  cow empty(std::allocator_arg, std::allocator<payload>{}, std::move(target));
+  EXPECT_TRUE(empty.valueless_after_move());
+  source = std::move(empty);
+  EXPECT_TRUE(source.valueless_after_move());
+}
+
+TEST(Allocator, PropagatingMoveTransfersNoncopyablePayloadBetweenUnequalAllocators)
+{
+  using payload = std::unique_ptr<int>;
+  using allocator = pocma_allocator<payload>;
+  using cow = xyz::copy_on_write<payload, allocator>;
+  int allocs1 = 0, deallocs1 = 0, allocs2 = 0, deallocs2 = 0;
+  allocator a(&allocs1, &deallocs1, 1), b(&allocs2, &deallocs2, 2);
+  {
+    cow source(std::allocator_arg, a, std::in_place, std::make_unique<int>(42));
+    cow target(std::allocator_arg, b, std::in_place, std::make_unique<int>(7));
+    auto address = &*source;
+    target = std::move(source);
+    EXPECT_TRUE(source.valueless_after_move());
+    EXPECT_EQ(&*target, address);
+    EXPECT_EQ(**target, 42);
+    EXPECT_EQ(target.get_allocator(), a);
+    EXPECT_EQ(allocs1, 1);
+    EXPECT_EQ(allocs2, 1);
+    EXPECT_EQ(deallocs1, 0);
+    EXPECT_EQ(deallocs2, 1);
+  }
+  EXPECT_EQ(allocs1, deallocs1);
+  EXPECT_EQ(allocs2, deallocs2);
+}
+
+TEST(Allocator, UnequalAllocatorMoveConstructionUsesConstLvalueCopy)
+{
+  struct payload
+  {
+    int value;
+    explicit payload(int n) : value(n) {}
+    payload(payload const&) = default;
+    payload(payload const&&) = delete;
+  };
+  using allocator = tracking_allocator<payload>;
+  using cow = xyz::copy_on_write<payload, allocator>;
+  int allocs1 = 0, deallocs1 = 0, allocs2 = 0, deallocs2 = 0;
+  allocator a(&allocs1, &deallocs1, 1), b(&allocs2, &deallocs2, 2);
+  {
+    cow source(std::allocator_arg, a, std::in_place, 42);
+    auto peer = source;
+    cow target(std::allocator_arg, b, std::move(source));
+    EXPECT_TRUE(source.valueless_after_move());
+    EXPECT_EQ(target->value, 42);
+    EXPECT_EQ(peer->value, 42);
+    EXPECT_FALSE(target.identical_to(peer));
+    EXPECT_EQ(target.get_allocator(), b);
+    EXPECT_EQ(peer.use_count(), 1);
+    EXPECT_EQ(allocs1, 1);
+    EXPECT_EQ(allocs2, 1);
+  }
+  EXPECT_EQ(allocs1, deallocs1);
+  EXPECT_EQ(allocs2, deallocs2);
+}

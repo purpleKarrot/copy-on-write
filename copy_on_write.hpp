@@ -206,15 +206,23 @@ public:
     : _alloc{a}
     , _self{nullptr}
   {
+    if constexpr (!alloc_traits::is_always_equal::value) {
+      static_assert(std::is_copy_constructible_v<T>);
+    }
+
     if (other.valueless_after_move()) {
       return;
     }
 
-    if (alloc_traits::is_always_equal::value || a == other._alloc) {
+    if constexpr (alloc_traits::is_always_equal::value) {
       _self = std::exchange(other._self, nullptr);
     } else {
-      _self = _make_model(_alloc, std::move(*other));
-      other._reset(nullptr);
+      if (a == other._alloc) {
+        _self = std::exchange(other._self, nullptr);
+      } else {
+        _self = _make_model(_alloc, *other);
+        other._reset(nullptr);
+      }
     }
   }
 
@@ -290,13 +298,21 @@ public:
 
     constexpr bool pocma = alloc_traits::propagate_on_container_move_assignment::value;
 
+    if constexpr (!pocma && !alloc_traits::is_always_equal::value) {
+      static_assert(std::is_copy_constructible_v<T>);
+    }
+
     if (x.valueless_after_move()) {
       _reset(nullptr);
-    } else if (pocma || _alloc == x._alloc) {
+    } else if constexpr (pocma || alloc_traits::is_always_equal::value) {
       _reset(std::exchange(x._self, nullptr));
     } else {
-      _reset(_make_model(_alloc, *x));
-      x._reset(nullptr);
+      if (_alloc == x._alloc) {
+        _reset(std::exchange(x._self, nullptr));
+      } else {
+        _reset(_make_model(_alloc, *x));
+        x._reset(nullptr);
+      }
     }
 
     if constexpr (pocma) {
