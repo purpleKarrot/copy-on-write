@@ -27,6 +27,35 @@ class copy_on_write;
 
 namespace detail {
 
+template <typename F>
+class scope_exit
+{
+  static_assert(std::is_nothrow_move_constructible_v<F>);
+  static_assert(std::is_nothrow_invocable_v<F&>);
+
+public:
+  constexpr explicit scope_exit(F f) noexcept
+    : _function(std::move(f))
+  {
+  }
+
+  scope_exit(scope_exit const&) = delete;
+  auto operator=(scope_exit const&) -> scope_exit& = delete;
+
+  constexpr ~scope_exit() noexcept
+  {
+    if (_active) {
+      _function();
+    }
+  }
+
+  constexpr void release() noexcept { _active = false; }
+
+private:
+  [[no_unique_address]] F _function;
+  bool _active = true;
+};
+
 template <typename Allocator>
 inline constexpr bool nothrow_allocator_selection = [] {
   if constexpr (requires(Allocator const& a) { a.select_on_container_copy_construction(); }) {
@@ -388,13 +417,10 @@ public:
 
     if (use_count() > 1) {
       auto replacement = _make_model(_alloc, std::as_const(_self->value));
-      try {
-        std::invoke(std::forward<Action>(action), replacement->value);
-      } catch (...) {
-        _destroy_model(_alloc, replacement);
-        throw;
-      }
+      auto cleanup = detail::scope_exit([&]() noexcept { _destroy_model(_alloc, replacement); });
+      std::invoke(std::forward<Action>(action), replacement->value);
       _reset(replacement);
+      cleanup.release();
     } else {
       std::invoke(std::forward<Action>(action), _self->value);
     }
@@ -488,14 +514,13 @@ private:
   {
     auto ma = model_alloc_t(a);
     auto p = std::allocator_traits<model_alloc_t>::allocate(ma, 1);
+    auto deallocate = detail::scope_exit(
+      [&]() noexcept { std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1); });
     std::construct_at(std::to_address(p));
-    try {
-      alloc_traits::construct(a, std::addressof(p->value), std::forward<Args>(args)...);
-    } catch (...) {
-      std::destroy_at(std::to_address(p));
-      std::allocator_traits<model_alloc_t>::deallocate(ma, p, 1);
-      throw;
-    }
+    auto destroy = detail::scope_exit([&]() noexcept { std::destroy_at(std::to_address(p)); });
+    alloc_traits::construct(a, std::addressof(p->value), std::forward<Args>(args)...);
+    destroy.release();
+    deallocate.release();
     return p;
   }
 
